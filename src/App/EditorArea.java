@@ -16,11 +16,15 @@ public class EditorArea extends JTextPane implements KeyListener {
     private final String PATH = "files/";
     private final String extension = ".html";
     private JLabel label;
+    private boolean isEmpty = true;
+
+    public static final int SAVE = 0;
+    public static final int SAVE_AS = 1;
 
 
     public EditorArea(JLabel label) {
         this.label = label;
-        setFileName(" ");
+        this.setFileName("");
         this.addKeyListener(this);
         this.setContentType("text/html");
     }
@@ -31,7 +35,7 @@ public class EditorArea extends JTextPane implements KeyListener {
 
     private void setFileName(String name) {
         this.fileName = name;
-        if (name.trim().isEmpty()) {
+        if (isEmpty) {
             label.setText(name);
         } else {
             label.setText(name + extension);
@@ -72,23 +76,26 @@ public class EditorArea extends JTextPane implements KeyListener {
         System.out.println(option);
 
         if (option == 0) {
-//            save();
-            System.exit(0);
+            if (fileName.trim().isEmpty()) {
+                save(SAVE_AS);
+            } else {
+                save(SAVE);
+            }
+//            System.exit(0);
         } else if (option == 1) {
             System.exit(0);
         }
     }
 
-    public void save(boolean state) {
-        // state 0 - save as
-        // state 1 - save
-        if (!state) {
-            String name = JOptionPane.showInputDialog(this, "What's your name, boi (or girl, I am not sexist)", fileName);
+    public void save(int state) {
+        if (state == SAVE && !isEmpty) {
+            String name = fileName + extension;
+        } else {
+            String name = JOptionPane.showInputDialog(this, "What's your filename, big boi (or girl, I am not sexist)", fileName.trim());
             if (name != null && !name.isEmpty()) {
+                isEmpty = false;
                 setFileName(name);
             }
-        } else {
-            String name = fileName + extension;
         }
 
         try {
@@ -131,8 +138,10 @@ public class EditorArea extends JTextPane implements KeyListener {
             try {
                 BufferedReader bf = new BufferedReader(new FileReader(PATH + result));
                 HTMLEditorKit kit = (HTMLEditorKit) this.getEditorKit();
-                HTMLDocument doc = (HTMLDocument) this.getDocument();
+                HTMLDocument doc = null;
                 kit.read(bf, doc, 0);
+                setDocument(doc);
+                isEmpty = false;
                 setFileName(result.replace(extension, ""));
             } catch (IOException | BadLocationException e) {
                 e.printStackTrace();
