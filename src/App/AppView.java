@@ -1,8 +1,12 @@
 package App;
 
 import EditorCommands.*;
+import Utility.CustomColor;
 
 import javax.swing.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
@@ -26,69 +30,36 @@ public class AppView extends JFrame implements ActionListener {
         return new Color(r, g, b);
     }
 
-//    private void initButtons(JPanel menu) {
-//        _commandsByItem = new HashMap<>();
-//        JLabel lab = new JLabel("Hello counter: ");
-//        JLabel c = new JLabel(String.format("%d", count));
-//        JPanel p = new JPanel();
-//        p.add(lab);
-//        p.add(c);
-//
-//        JButton newButton = new JButton("new");
-//        newButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                count++;
-//                c.setForeground(randColor());
-//                c.setText(String.format("%d", count));
-//
-//            }
-//        });
-//        _commandsByButton.put(newButton, new CommandNew());
-//
-//        JButton editButton = new JButton("edit");
-//        editButton.addActionListener(this);
-//        _commandsByButton.put(editButton, new CommandOpen(editor));
-//
-//        JButton closeButton = new JButton("close");
-//        closeButton.addActionListener(this);
-//        _commandsByButton.put(closeButton, new CommandClose(editor));
-//
-//        menu.add(newButton);
-//        menu.add(editButton);
-//        menu.add(closeButton);
-//
-//
-//        menu.add(p);
-//    }
-
     private JMenuBar setupMenu(JLabel label){
-        JLabel lab = label;
         JMenuBar mb = new JMenuBar();
         JMenu file, edit, help;
         JMenuItem newFile, openFile, saveFile, saveFileAs, closeAction;
 
         newFile = new JMenuItem("New");
         newFile.addActionListener(this);
+        newFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
         _commandsByItem.put(newFile, new CommandNew());
 
         openFile = new JMenuItem("Open");
         openFile.addActionListener(this);
+        openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
         _commandsByItem.put(openFile, new CommandOpen(editor));
 
         saveFile = new JMenuItem("Save");
         saveFile.addActionListener(this);
+        saveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
         _commandsByItem.put(saveFile, new CommandSave(editor));
 
         saveFileAs = new JMenuItem("Save as");
         saveFileAs.addActionListener(this);
         _commandsByItem.put(saveFileAs, new CommandSaveAs(editor));
 
-        closeAction = new JMenuItem("Exit");
+        closeAction = new JMenuItem("Exit", KeyEvent.VK_U);
         closeAction.addActionListener(this);
         _commandsByItem.put(closeAction, new CommandClose(editor));
 
         file = new JMenu("File");
+        file.setMnemonic(KeyEvent.VK_F);
         file.add(newFile);
         file.add(openFile);
         file.add(saveFile);
@@ -97,42 +68,61 @@ public class AppView extends JFrame implements ActionListener {
         file.add(closeAction);
 
         edit = new JMenu("Edit");
+        edit.setMnemonic(KeyEvent.VK_E);
+        edit.add(setupStyleMenu());
         help = new JMenu("Help");
 
-        lab.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+        label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
 
         mb.add(file);
         mb.add(edit);
         mb.add(help);
         mb.add(Box.createHorizontalGlue());
-        mb.add(lab);
+        mb.add(label);
 
         return mb;
     }
 
+    private JMenu setupStyleMenu(){
+        HashMap<Object, Color>  _colorsByItem = new HashMap<>();
+        JMenu menu = new JMenu("Colors");
+        menu.setMnemonic(KeyEvent.VK_C);
+
+
+        ActionListener al = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JMenuItem jmi = (JMenuItem) e.getSource();
+                Color color = _colorsByItem.get(jmi);
+                SimpleAttributeSet as = new SimpleAttributeSet();
+                as.addAttribute(StyleConstants.Foreground, color);
+                editor.setCharacterAttributes(as, false);
+            }
+        };
+
+        for (CustomColor col : CustomColor.colors){
+            JMenuItem item = new JMenuItem(col.toString());
+            item.addActionListener(al);
+            menu.add(item);
+            _colorsByItem.put(item, col.getColor());
+        }
+
+        return menu;
+    }
     private void setupUI() {
         JPanel panel = new JPanel();
-//        JPanel menu = new JPanel();
         JLabel fileName = new JLabel();
         editor = new EditorArea(fileName);
         JMenuBar mb = setupMenu(fileName);
 
-//        BoxLayout box = new BoxLayout(panel, BoxLayout.Y_AXIS);
-//        panel.setLayout(box);
-//        editor.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 5));
         editor.setBounds(0, 0, 360, 320);
-//        editor.setMargin(new Insets(10, 10, 10, 10));
-
-//        initButtons(menu);
-//        fileName.setAlignmentX(Component.CENTER_ALIGNMENT);
-//        menu.add(fileName);
-
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 //        panel.add(fileName);
 //        fileName.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(editor);
         panel.add(mb);
+
         getContentPane().add(panel);
         this.setJMenuBar(mb);
         this.setSize(400, 400);

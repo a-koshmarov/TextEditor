@@ -1,22 +1,28 @@
 package App;
 
+import javax.print.Doc;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.HTMLWriter;;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
 import java.util.ArrayList;
 
-public class EditorArea extends JTextPane implements KeyListener {
+public class EditorArea extends JTextPane implements DocumentListener {
     private String fileName;
     private final String PATH = "files/";
     private final String extension = ".html";
     private JLabel label;
     private boolean isEmpty = true;
+    private boolean isSaved = true;
 
     public static final int SAVE = 0;
     public static final int SAVE_AS = 1;
@@ -24,13 +30,10 @@ public class EditorArea extends JTextPane implements KeyListener {
 
     public EditorArea(JLabel label) {
         this.label = label;
-        this.setFileName("");
-        this.addKeyListener(this);
+        this.setFileName("def");
         this.setContentType("text/html");
-    }
-
-    public String getFileName() {
-        return fileName + extension;
+//        Document doc = this.getDocument();
+//        doc.addDocumentListener(this);
     }
 
     private void setFileName(String name) {
@@ -42,33 +45,13 @@ public class EditorArea extends JTextPane implements KeyListener {
         }
     }
 
-    @Override
-    public void keyReleased(KeyEvent e) {
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        SimpleAttributeSet as = new SimpleAttributeSet();
-        if ((e.getKeyCode() == KeyEvent.VK_R) && ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0)) {
-            as.addAttribute(StyleConstants.Foreground, Color.RED);
-        } else if ((e.getKeyCode() == KeyEvent.VK_Y) && ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0)) {
-            as.addAttribute(StyleConstants.Foreground, Color.YELLOW);
-        } else if ((e.getKeyCode() == KeyEvent.VK_G) && ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0)) {
-            as.addAttribute(StyleConstants.Foreground, Color.GREEN);
-        } else if ((e.getKeyCode() == KeyEvent.VK_B) && ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0)) {
-            as.addAttribute(StyleConstants.Bold, Boolean.TRUE);
-        } else if ((e.getKeyCode() == KeyEvent.VK_I) && ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0)) {
-            as.addAttribute(StyleConstants.Italic, Boolean.TRUE);
-        } else if ((e.getKeyCode() == KeyEvent.VK_Q) && ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0)) {
-            as.addAttribute(StyleConstants.Foreground, Color.BLACK);
-            as.addAttribute(StyleConstants.Bold, Boolean.FALSE);
-            as.addAttribute(StyleConstants.Italic, Boolean.FALSE);
+    private void setSavedStatus(boolean status) {
+        isSaved = status;
+        if (isSaved) {
+            label.setForeground(Color.GREEN);
+        } else {
+            label.setForeground(Color.RED);
         }
-        this.setCharacterAttributes(as, false);
     }
 
     public void close() {
@@ -106,6 +89,7 @@ public class EditorArea extends JTextPane implements KeyListener {
 
             out.flush();
             out.close();
+//            setSavedStatus(true);
         } catch (IOException | BadLocationException e) {
             e.printStackTrace();
         }
@@ -115,7 +99,6 @@ public class EditorArea extends JTextPane implements KeyListener {
         File dir = new File(PATH);
         File[] dirListing = dir.listFiles();
         ArrayList<String> avFiles = new ArrayList<>();
-//        String[] avFiles = new String[dirListing.length];
 
         if (dirListing != null) {
             for (File child : dirListing) {
@@ -136,32 +119,28 @@ public class EditorArea extends JTextPane implements KeyListener {
             System.out.println(result);
 
             try {
-                BufferedReader bf = new BufferedReader(new FileReader(PATH + result));
-                HTMLEditorKit kit = (HTMLEditorKit) this.getEditorKit();
-                HTMLDocument doc = null;
-                kit.read(bf, doc, 0);
-                setDocument(doc);
+                File file = new File(PATH + result);
+                this.setPage(file.toURI().toURL());
+                this.setEditable(true);
                 isEmpty = false;
                 setFileName(result.replace(extension, ""));
-            } catch (IOException | BadLocationException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
-//            try {
-////                BufferedReader br = new BufferedReader(new FileReader(PATH+result));
-////                String line;
-////                this.setText("");
-////                while((line = br.readLine()) != null){
-////                    System.out.println(line);
-////                    this.add
-////                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
         }
-
-
     }
 
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        setSavedStatus(false);
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        setSavedStatus(false);
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+    }
 }
