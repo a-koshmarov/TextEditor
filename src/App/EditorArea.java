@@ -1,28 +1,18 @@
 package App;
 
-import javax.print.Doc;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.HTMLWriter;;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import javax.swing.text.html.HTMLWriter;
 import java.io.*;
 import java.util.ArrayList;
 
-public class EditorArea extends JTextPane implements DocumentListener {
+public class EditorArea extends JTextPane{
     private String fileName;
     private final String PATH = "files/";
     private final String extension = ".html";
     private JLabel label;
     private boolean isEmpty = true;
-    private boolean isSaved = true;
 
     public static final int SAVE = 0;
     public static final int SAVE_AS = 1;
@@ -30,10 +20,8 @@ public class EditorArea extends JTextPane implements DocumentListener {
 
     public EditorArea(JLabel label) {
         this.label = label;
-        this.setFileName("def");
+        this.setFileName("");
         this.setContentType("text/html");
-//        Document doc = this.getDocument();
-//        doc.addDocumentListener(this);
     }
 
     private void setFileName(String name) {
@@ -42,15 +30,6 @@ public class EditorArea extends JTextPane implements DocumentListener {
             label.setText(name);
         } else {
             label.setText(name + extension);
-        }
-    }
-
-    private void setSavedStatus(boolean status) {
-        isSaved = status;
-        if (isSaved) {
-            label.setForeground(Color.GREEN);
-        } else {
-            label.setForeground(Color.RED);
         }
     }
 
@@ -89,7 +68,6 @@ public class EditorArea extends JTextPane implements DocumentListener {
 
             out.flush();
             out.close();
-//            setSavedStatus(true);
         } catch (IOException | BadLocationException e) {
             e.printStackTrace();
         }
@@ -128,19 +106,5 @@ public class EditorArea extends JTextPane implements DocumentListener {
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public void insertUpdate(DocumentEvent e) {
-        setSavedStatus(false);
-    }
-
-    @Override
-    public void removeUpdate(DocumentEvent e) {
-        setSavedStatus(false);
-    }
-
-    @Override
-    public void changedUpdate(DocumentEvent e) {
     }
 }

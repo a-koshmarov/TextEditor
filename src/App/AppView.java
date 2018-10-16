@@ -67,10 +67,9 @@ public class AppView extends JFrame implements ActionListener {
         file.addSeparator();
         file.add(closeAction);
 
-        edit = new JMenu("Edit");
-        edit.setMnemonic(KeyEvent.VK_E);
-        edit.add(setupStyleMenu());
+        edit = setupStyleMenu();
         help = new JMenu("Help");
+        help.addActionListener(this);
 
         label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
 
@@ -85,11 +84,13 @@ public class AppView extends JFrame implements ActionListener {
 
     private JMenu setupStyleMenu(){
         HashMap<Object, Color>  _colorsByItem = new HashMap<>();
-        JMenu menu = new JMenu("Colors");
-        menu.setMnemonic(KeyEvent.VK_C);
+        JMenu mainMenu = new JMenu("Edit");
+        JMenu colorMenu = new JMenu("Colors");
+        mainMenu.setMnemonic(KeyEvent.VK_E);
+        colorMenu.setMnemonic(KeyEvent.VK_C);
 
 
-        ActionListener al = new ActionListener() {
+        ActionListener colorListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JMenuItem jmi = (JMenuItem) e.getSource();
@@ -100,14 +101,31 @@ public class AppView extends JFrame implements ActionListener {
             }
         };
 
+        ActionListener checkBoxListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
         for (CustomColor col : CustomColor.colors){
             JMenuItem item = new JMenuItem(col.toString());
-            item.addActionListener(al);
-            menu.add(item);
+            item.addActionListener(colorListener);
+            colorMenu.add(item);
             _colorsByItem.put(item, col.getColor());
         }
 
-        return menu;
+        mainMenu.add(colorMenu);
+
+        JCheckBoxMenuItem bold = new JCheckBoxMenuItem("Bold");
+        bold.addActionListener(checkBoxListener);
+        mainMenu.add(bold);
+
+        JCheckBoxMenuItem italic = new JCheckBoxMenuItem("Italic");
+        italic.addActionListener(checkBoxListener);
+        mainMenu.add(italic);
+
+        return mainMenu;
     }
     private void setupUI() {
         JPanel panel = new JPanel();
@@ -118,8 +136,6 @@ public class AppView extends JFrame implements ActionListener {
         editor.setBounds(0, 0, 360, 320);
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-//        panel.add(fileName);
-//        fileName.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(editor);
         panel.add(mb);
 
