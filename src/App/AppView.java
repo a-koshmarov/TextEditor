@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.AttributeSet;
+import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
@@ -14,11 +15,11 @@ import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Random;
 
-//Invoker
 public class AppView extends JFrame implements ActionListener, CaretListener {
-    private HashMap<Object, Command> _commandsByItem;
-    private EditorArea editor;
-    private int count = 0;
+    private HashMap<Object, Command> _commandsByItem; // Commands associated with menu items
+    private HashMap<Integer, EditorTab> _tabs;        // Opened tabs
+    private int activeTab;                            // Current tab index
+
     private boolean isBold = false;
     private boolean isItalic = false;
     private Color curColor = Color.BLACK;
@@ -26,20 +27,17 @@ public class AppView extends JFrame implements ActionListener, CaretListener {
     public AppView() {
         super("Text editor");
         _commandsByItem = new HashMap<>();
+        _tabs = new HashMap<>();
     }
 
-    private Color randColor() {
-        Random random = new Random();
-        float r = random.nextFloat();
-        float g = random.nextFloat();
-        float b = random.nextFloat();
-        return new Color(r, g, b);
-    }
+    private JMenuBar setupMenu() {
+        // Create main menu and submenus
 
-    private JMenuBar setupMenu(JLabel label) {
         JMenuBar mb = new JMenuBar();
         JMenu file, edit, help;
         JMenuItem newFile, openFile, saveFile, saveFileAs, closeAction;
+
+        // Add action listeners and accelerators to the menu items
 
         newFile = new JMenuItem("New");
         newFile.addActionListener(this);
@@ -49,20 +47,22 @@ public class AppView extends JFrame implements ActionListener, CaretListener {
         openFile = new JMenuItem("Open");
         openFile.addActionListener(this);
         openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-        _commandsByItem.put(openFile, new CommandOpen(editor));
+        _commandsByItem.put(openFile, new CommandOpen());
 
         saveFile = new JMenuItem("Save");
         saveFile.addActionListener(this);
         saveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-        _commandsByItem.put(saveFile, new CommandSave(editor));
+        _commandsByItem.put(saveFile, new CommandSave());
 
         saveFileAs = new JMenuItem("Save as");
         saveFileAs.addActionListener(this);
-        _commandsByItem.put(saveFileAs, new CommandSaveAs(editor));
+        _commandsByItem.put(saveFileAs, new CommandSaveAs());
 
         closeAction = new JMenuItem("Exit", KeyEvent.VK_U);
         closeAction.addActionListener(this);
-        _commandsByItem.put(closeAction, new CommandClose(editor));
+        _commandsByItem.put(closeAction, new CommandClose());
+
+        // Create file menu and add menu items
 
         file = new JMenu("File");
         file.setMnemonic(KeyEvent.VK_F);
@@ -73,17 +73,23 @@ public class AppView extends JFrame implements ActionListener, CaretListener {
         file.addSeparator();
         file.add(closeAction);
 
+        // Create the rest of the menu
+
         edit = setupStyleMenu();
         help = new JMenu("Help");
         help.addActionListener(this);
 
-        label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+        // Add right margin to label
+
+//        label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+
+        // Add all submenus to the main window
 
         mb.add(file);
         mb.add(edit);
         mb.add(help);
         mb.add(Box.createHorizontalGlue());
-        mb.add(label);
+//        mb.add(label);
 
         return mb;
     }
@@ -103,7 +109,7 @@ public class AppView extends JFrame implements ActionListener, CaretListener {
                 Color color = _colorsByItem.get(jmi);
                 SimpleAttributeSet as = new SimpleAttributeSet();
                 as.addAttribute(StyleConstants.Foreground, color);
-                editor.setCharacterAttributes(as, false);
+//                editor.setCharacterAttributes(as, false);
                 curColor = color;
             }
         };
@@ -131,7 +137,7 @@ public class AppView extends JFrame implements ActionListener, CaretListener {
                     as.addAttribute(StyleConstants.Bold, false);
                     isBold = false;
                 }
-                editor.setCharacterAttributes(as, false);
+//                editor.setCharacterAttributes(as, false);
             }
         });
 
@@ -151,7 +157,7 @@ public class AppView extends JFrame implements ActionListener, CaretListener {
                     as.addAttribute(StyleConstants.Italic, false);
                     isItalic = false;
                 }
-                editor.setCharacterAttributes(as, false);
+//                editor.setCharacterAttributes(as, false);
             }
         });
         mainMenu.add(italic);
@@ -159,33 +165,28 @@ public class AppView extends JFrame implements ActionListener, CaretListener {
         return mainMenu;
     }
 
-    private void setupUI() {
+    public void launch() {
         JPanel panel = new JPanel();
-        JLabel fileName = new JLabel();
-        editor = new EditorArea(fileName);
-        JMenuBar mb = setupMenu(fileName);
-
-//        JTabbedPane tabMenu = new JTabbedPane();
-//        tabMenu.addTab("Tab1", editor);
+        JMenuBar mb = setupMenu();
+        JTabbedPane tabMenu = new JTabbedPane();
+        _tabs.put(tabMenu.getTabCount(), new EditorTab());
+        tabMenu.addTab("first", _tabs.get(0));
+        activeTab = 0;
 //        tabMenu.addTab("Tab2", new JLabel("hallo"));
-//        tabMenu.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+        tabMenu.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+        tabMenu.setTabPlacement(JTabbedPane.LEFT);
 
-        editor.setBounds(0, 0, 360, 320);
-        editor.addCaretListener(this);
-        editor.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+//        tabMenu.setBounds(0, 0, 360, 320);
+//        editor.addCaretListener(this);
+//        tabMenu.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(editor);
         panel.add(mb);
-//        panel.add(tabMenu);
+        panel.add(tabMenu);
 
         getContentPane().add(panel);
         this.setJMenuBar(mb);
         this.setSize(400, 400);
-    }
-
-    public void launch() {
-        setupUI();
         setVisible(true);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -195,11 +196,12 @@ public class AppView extends JFrame implements ActionListener, CaretListener {
         });
     }
 
+
+
     @Override
     public void actionPerformed(ActionEvent e) {
-//        ((JButton) e.getSource()).setBackground(Color.RED);
         Command command = _commandsByItem.get(e.getSource());
-        command.execute();
+        command.execute(_tabs.get(activeTab));
     }
 
     @Override
@@ -208,6 +210,6 @@ public class AppView extends JFrame implements ActionListener, CaretListener {
         as.addAttribute(StyleConstants.Foreground, curColor);
         as.addAttribute(StyleConstants.Bold, isBold);
         as.addAttribute(StyleConstants.Italic, isItalic);
-        editor.setCharacterAttributes(as, false);
+//        editor.setCharacterAttributes(as, false);
     }
 }

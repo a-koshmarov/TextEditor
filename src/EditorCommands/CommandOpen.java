@@ -1,17 +1,12 @@
 package EditorCommands;
 
-import App.EditorArea;
+import App.EditorTab;
 
 public class CommandOpen implements Command {
-    private EditorArea editorArea;
-
-    public CommandOpen(EditorArea editorArea) {
-        this.editorArea = editorArea;
-    }
 
     @Override
-    public void execute() {
+    public void execute(EditorTab tab) {
         System.out.println("Edit");
-        editorArea.open();
+        tab.open();
     }
 }

@@ -1,17 +1,12 @@
 package EditorCommands;
 
-import App.EditorArea;
+import App.EditorTab;
 
 public class CommandClose implements Command {
-    private EditorArea editorArea;
-
-    public CommandClose(EditorArea editorArea){
-        this.editorArea = editorArea;
-    }
 
     @Override
-    public void execute() {
+    public void execute(EditorTab tab) {
         System.out.println("Close");
-        editorArea.close();
+        tab.close();
     }
 }

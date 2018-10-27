@@ -1,17 +1,12 @@
 package EditorCommands;
 
-import App.EditorArea;
+import App.EditorTab;
 
 public class CommandSave implements Command {
-    private EditorArea editorArea;
-
-    public CommandSave(EditorArea editorArea){
-        this.editorArea = editorArea;
-    }
 
     @Override
-    public void execute() {
+    public void execute(EditorTab tab) {
         System.out.println("Save");
-        editorArea.save(EditorArea.SAVE);
+        tab.save(EditorTab.SAVE);
     }
 }
