@@ -7,6 +7,5 @@ public class Main {
 //        editor.launch();
         AppView app = new AppView();
         app.launch();
-
     }
 }
