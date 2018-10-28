@@ -1,5 +1,10 @@
 package App;
 
+import BL.FileState;
+import BL.Session;
+import DAL.DAO.FileStateDAO;
+import DAL.DTO.FileStateDTO;
+
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
@@ -9,53 +14,62 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
 
 public class EditorTabMenu extends JTabbedPane {
     private EditorTab currentTab;
+    private Session session;
 
     // Constants
-    private static final String DEFAULT = "untitled";
     public static final int SAVE = 0;
     public static final int SAVE_AS = 1;
 
-    public EditorTabMenu(){
-        currentTab = new EditorTab(DEFAULT);
-        currentTab.setFocus();
-        addTab(currentTab.getFileName(), currentTab);
+    public EditorTabMenu(Session session){
+        this.session = session;
+        init();
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         setTabPlacement(JTabbedPane.LEFT);
         setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 10));
     }
 
+    private void init(){
+        for (FileState fileState : session.getFiles()){
+            if (fileState.isOpened()){
+                newTab(fileState);
+            }
+        }
+    }
+
     public void newTab(){
-        String name = JOptionPane.showInputDialog(this, "What's your filename?");
-        currentTab = new EditorTab(name);
+        String fileName = JOptionPane.showInputDialog(this, "What's your filename?");
+        FileState fileState = new FileState(session.getUser().getID(), fileName);
+        FileStateDAO.addFileState(new FileStateDTO(fileState));
+        currentTab = new EditorTab(fileState);
         currentTab.setFocus();
-        addTab(name, currentTab);
+        addTab(fileState.getFileName(), currentTab);
         setSelectedComponent(currentTab);
     }
 
-    public void newTab(String name){
-        currentTab = new EditorTab(name);
+    public void newTab(FileState fileState){
+        currentTab = new EditorTab(fileState);
         currentTab.setFocus();
-        addTab(name, currentTab);
+        addTab(fileState.getFileName(), currentTab);
         setSelectedComponent(currentTab);
     }
 
     public void save(int state) {
-        if (state == SAVE_AS || (state == SAVE && currentTab.getFileName().equals(DEFAULT))){
+        if (state == SAVE_AS){
             String name = JOptionPane.showInputDialog(this, "What's your filename, big boi (or girl, I am not sexist)", currentTab.getFileName());
             if (name != null && !name.isEmpty()) {
-                if (name.equals(DEFAULT)) {
-                    JOptionPane.showMessageDialog(this,  "Invalid filename. Please, pick another one.", "Invalid name", JOptionPane.WARNING_MESSAGE);
-                }
                 currentTab.setFileName(name);
                 currentTab.setFocus();
                 setTitleAt(getSelectedIndex(), name);
+                FileStateDAO.addFileState(new FileStateDTO(currentTab.getFileState()));
             } else {
                 return;
             }
         }
+
         try {
             File file = new File(currentTab.getFullPath());
             BufferedWriter out = new BufferedWriter(new FileWriter(file));
@@ -69,23 +83,19 @@ public class EditorTabMenu extends JTabbedPane {
     }
 
     public void close() {
-        int option = JOptionPane.showConfirmDialog(this, "Do you want to save file?", "Confirmation", JOptionPane.YES_NO_OPTION);
-        System.out.println(option);
+        if (getTabCount() == 0) {
+            return;
+        }
 
-        if (option == 0) {
-            if (currentTab.getFileName().equals(DEFAULT)) {
-                save(SAVE_AS);
-            } else {
-                save(SAVE);
-            }
-        }
-        if (getTabCount() == 1){
-            System.exit(0);
-        } else {
-            remove(currentTab);
-        }
+        save(SAVE);
+        FileState fileState = currentTab.getFileState();
+        fileState.setOpened(false);
+        FileStateDAO.updateFileState(new FileStateDTO(fileState));
+        remove(currentTab);
     }
 
+
+    // TODO rework
     public void open() {
         File dir = new File(EditorTab.PATH);
         File[] dirListing = dir.listFiles();
@@ -109,9 +119,22 @@ public class EditorTabMenu extends JTabbedPane {
                     JOptionPane.QUESTION_MESSAGE, null, files, files[0]);
 
             try {
+                Set<String> fileNames = FileStateDAO.getAllFileNames(session.getUser().getID());
                 File file = new File(EditorTab.PATH + result);
-                newTab(result.replace(EditorTab.EXTENSION, ""));
+                String fileName = result.replace(EditorTab.EXTENSION, "");
+                FileState fileState;
+
+                if (fileNames.contains(fileName)){
+                    fileState = new FileState(FileStateDAO.getFileState(session.getUser().getID(), fileName));
+                } else {
+                    fileState = new FileState(session.getUser().getID(), fileName);
+                    FileStateDAO.addFileState(new FileStateDTO(fileState));
+                }
+
+                newTab(fileState);
                 currentTab.setURL(file.toURI().toURL());
+
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

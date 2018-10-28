@@ -30,4 +30,9 @@ public class User {
     public String getPassword() {
         return password;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s", ID, userName);
+    }
 }

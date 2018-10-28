@@ -1,6 +1,8 @@
 package GUI;
 
+import App.EditorTab;
 import App.EditorTabMenu;
+import BL.Session;
 import EditorCommands.*;
 import Utility.CustomColor;
 
@@ -15,11 +17,13 @@ import java.util.HashMap;
 
 public class AppView extends JFrame implements ActionListener, CaretListener {
     private HashMap<Object, Command> _commandsByItem; // Commands associated with menu items
-    private EditorTabMenu tabMenu;
+//    private EditorTabMenu tabMenu;
+    private Session session;
 
-    public AppView() {
+    public AppView(Session session) {
         super("Text editor");
         _commandsByItem = new HashMap<>();
+        this.session = session;
     }
 
     private JMenuBar setupMenu() {
@@ -35,25 +39,25 @@ public class AppView extends JFrame implements ActionListener, CaretListener {
         newFile = new JMenuItem("New");
         newFile.addActionListener(this);
         newFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
-        _commandsByItem.put(newFile, new CommandNew(tabMenu));
+        _commandsByItem.put(newFile, new CommandNew(session));
 
         openFile = new JMenuItem("Open");
         openFile.addActionListener(this);
         openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-        _commandsByItem.put(openFile, new CommandOpen(tabMenu));
+        _commandsByItem.put(openFile, new CommandOpen(session));
 
         saveFile = new JMenuItem("Save");
         saveFile.addActionListener(this);
         saveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-        _commandsByItem.put(saveFile, new CommandSave(tabMenu));
+        _commandsByItem.put(saveFile, new CommandSave(session));
 
         saveFileAs = new JMenuItem("Save as");
         saveFileAs.addActionListener(this);
-        _commandsByItem.put(saveFileAs, new CommandSaveAs(tabMenu));
+        _commandsByItem.put(saveFileAs, new CommandSaveAs(session));
 
         closeAction = new JMenuItem("Exit", KeyEvent.VK_U);
         closeAction.addActionListener(this);
-        _commandsByItem.put(closeAction, new CommandClose(tabMenu));
+        _commandsByItem.put(closeAction, new CommandClose(session));
 
         // Create file menu and add menu items
 
@@ -154,15 +158,12 @@ public class AppView extends JFrame implements ActionListener, CaretListener {
 
     public void launch() {
         JPanel panel = new JPanel();
-        tabMenu = new EditorTabMenu();
         JMenuBar mb = setupMenu();
 
 //        editor.addCaretListener(this);
-
-
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(mb);
-        panel.add(tabMenu);
+        panel.add(session.getEditorMenu());
 
         getContentPane().add(panel);
         this.setJMenuBar(mb);

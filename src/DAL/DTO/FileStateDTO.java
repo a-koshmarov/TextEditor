@@ -1,5 +1,8 @@
 package DAL.DTO;
 
+import BL.FileState;
+import Utility.CustomColor;
+
 public class FileStateDTO {
     private int userID;
     private String fileName;
@@ -8,6 +11,20 @@ public class FileStateDTO {
     private int italic;
     private int bold;
     private int opened;
+
+    public FileStateDTO(){
+    }
+
+    public FileStateDTO(FileState fileState){
+        this.userID = fileState.getUserID();
+        this.fileName = fileState.getFileName();
+        this.cursor = fileState.getCursor();
+        CustomColor customColor = new CustomColor();
+        this.color = customColor.getIndexByColor(fileState.getColor());
+        this.italic = fileState.isItalic() ? 1 : 0;
+        this.bold = fileState.isBold() ? 1 : 0;
+        this.opened = fileState.isOpened() ? 1 : 0;
+    }
 
     public int getUserID() {
         return userID;

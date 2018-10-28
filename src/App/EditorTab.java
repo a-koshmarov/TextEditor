@@ -1,8 +1,12 @@
 package App;
 
+import BL.FileState;
+
 import javax.swing.*;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
@@ -11,9 +15,15 @@ import java.net.URL;
 public class EditorTab extends JPanel{
     // File information
     private String fileName;
-    public static final String PATH = "files/";
-    public static final String EXTENSION = ".html";
-    private boolean isEmpty = true;
+    static final String PATH = "files/";
+    static final String EXTENSION = ".html";
+
+    // Style constants
+    private FileState fileState;
+    private int cursor;
+    private Color color;
+    private boolean italic;
+    private boolean bold;
 
     // Editor pane
     private EditorArea editor;
@@ -25,16 +35,29 @@ public class EditorTab extends JPanel{
         add(editor);
     }
 
-    boolean isEmpty() {
-        return isEmpty;
+    EditorTab(FileState fileState){
+        this.fileState = fileState;
+        this.fileName = fileState.getFileName();
+        this.cursor = fileState.getCursor();
+        this.color = fileState.getColor();
+        this.italic = fileState.isItalic();
+        this.bold = fileState.isBold();
+
+        SimpleAttributeSet sat = new SimpleAttributeSet();
+        editor = new EditorArea();
+        editor.setCaretPosition(0);
+        sat.addAttribute(StyleConstants.Foreground, color);
+        sat.addAttribute(StyleConstants.Italic, italic);
+        sat.addAttribute(StyleConstants.Bold, bold);
+        editor.setCharacterAttributes(sat, false);
+
+        setLayout(new BorderLayout());
+        add(editor);
     }
+
 
     String getFullPath(){
         return PATH + fileName + EXTENSION;
-    }
-
-    String getNameWithExt(){
-        return fileName + EXTENSION;
     }
 
     String getFileName() {
@@ -45,6 +68,15 @@ public class EditorTab extends JPanel{
         return editor.getDocument();
     }
 
+    FileState getFileState(){
+        fileState.setFileName(fileName);
+        fileState.setCursor(editor.getCaretPosition());
+        fileState.setColor(color);
+        fileState.setItalic(italic);
+        fileState.setBold(bold);
+        return fileState;
+    }
+
     void setFocus(){
         editor.requestFocusInWindow();
     }
@@ -52,6 +84,7 @@ public class EditorTab extends JPanel{
     void setURL(URL url){
         try {
             editor.setPage(url);
+            System.out.println(editor.getText().length());
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -66,5 +99,25 @@ public class EditorTab extends JPanel{
         fileName = name;
     }
 
+    public void setColor(Color color) {
+        SimpleAttributeSet sat = new SimpleAttributeSet();
+        sat.addAttribute(StyleConstants.Foreground, color);
+        editor.setCharacterAttributes(sat, false);
+        this.color = color;
+    }
+
+    public void setItalic(boolean italic) {
+        SimpleAttributeSet sat = new SimpleAttributeSet();
+        sat.addAttribute(StyleConstants.Italic, italic);
+        editor.setCharacterAttributes(sat, false);
+        this.italic = italic;
+    }
+
+    public void setBold(boolean bold) {
+        SimpleAttributeSet sat = new SimpleAttributeSet();
+        sat.addAttribute(StyleConstants.Bold, bold);
+        editor.setCharacterAttributes(sat, false);
+        this.bold = bold;
+    }
 
 }

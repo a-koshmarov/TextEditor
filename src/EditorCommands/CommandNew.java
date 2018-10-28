@@ -1,17 +1,17 @@
 package EditorCommands;
 
-import App.EditorTabMenu;
+import BL.Session;
 
 public class CommandNew implements Command{
-    private EditorTabMenu tabMenu;
+    private Session session;
 
-    public CommandNew(EditorTabMenu tabMenu){
-        this.tabMenu = tabMenu;
+    public CommandNew(Session session){
+        this.session = session;
     }
 
     @Override
     public void execute() {
         System.out.println("Hello");
-        tabMenu.newTab();
+        session.newTab();
     }
 }

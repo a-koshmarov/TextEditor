@@ -1,17 +1,17 @@
 package EditorCommands;
 
-import App.EditorTabMenu;
+import BL.Session;
 
 public class CommandClose implements Command {
-    private EditorTabMenu tabMenu;
+    private Session session;
 
-    public CommandClose(EditorTabMenu tabMenu){
-        this.tabMenu = tabMenu;
+    public CommandClose(Session session){
+        this.session = session;
     }
 
     @Override
     public void execute() {
         System.out.println("Close");
-        tabMenu.close();
+        session.close();
     }
 }

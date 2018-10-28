@@ -14,6 +14,16 @@ public class FileState {
     private boolean bold;
     private boolean opened;
 
+    public FileState(int ID, String fileName){
+        this.userID = ID;
+        this.fileName = fileName;
+        this.cursor = 0;
+        this.color = Color.BLACK;
+        this.italic = false;
+        this.bold = false;
+        this.opened = true;
+    }
+
     public FileState(FileStateDTO file){
         this.userID = file.getUserID();
         this.fileName = file.getFileName();
