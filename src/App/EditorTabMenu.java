@@ -18,7 +18,7 @@ public class EditorTabMenu extends JTabbedPane {
     public static final int SAVE = 0;
     public static final int SAVE_AS = 1;
 
-    EditorTabMenu(){
+    public EditorTabMenu(){
         currentTab = new EditorTab(DEFAULT);
         currentTab.setFocus();
         addTab(currentTab.getFileName(), currentTab);

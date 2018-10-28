@@ -1,4 +1,4 @@
-import App.AppView;
+import GUI.AppView;
 
 public class Main {
 

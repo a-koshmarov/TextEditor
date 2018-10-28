@@ -28,4 +28,8 @@ public class CustomColor{
     public Color getColor() {
         return color;
     }
+
+    public static Color getColorByIndex(int index){
+        return colors[index].color;
+    }
 }
