@@ -1,12 +1,17 @@
 package EditorCommands;
 
-import App.EditorTab;
+import App.EditorTabMenu;
 
 public class CommandSaveAs implements Command {
+    private EditorTabMenu tabMenu;
+
+    public CommandSaveAs(EditorTabMenu tabMenu){
+        this.tabMenu = tabMenu;
+    }
 
     @Override
-    public void execute(EditorTab tab) {
+    public void execute() {
         System.out.println("Save as");
-        tab.save(EditorTab.SAVE_AS);
+        tabMenu.save(EditorTabMenu.SAVE_AS);
     }
 }

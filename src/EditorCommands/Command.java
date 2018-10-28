@@ -1,7 +1,7 @@
 package EditorCommands;
 
-import App.EditorTab;
+import javax.swing.*;
 
 public interface Command {
-    public void execute(EditorTab tab);
+    public void execute();
 }

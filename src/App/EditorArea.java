@@ -13,6 +13,7 @@ public class EditorArea extends JTextPane implements KeyListener {
     public EditorArea() {
         this.setContentType("text/html");
         addKeyListener(this);
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     }
 
     @Override
@@ -20,7 +21,7 @@ public class EditorArea extends JTextPane implements KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_TAB){
             e.consume();
             try {
-                this.getDocument().insertString(getCaretPosition(), "   ", null);
+                this.getDocument().insertString(getCaretPosition(), "                 ", null);
             } catch (BadLocationException ex) {
                 ex.printStackTrace();
             }
