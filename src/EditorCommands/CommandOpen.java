@@ -1,17 +1,17 @@
 package EditorCommands;
 
-import App.EditorArea;
+import BL.Session;
 
 public class CommandOpen implements Command {
-    private EditorArea editorArea;
+    private Session session;
 
-    public CommandOpen(EditorArea editorArea) {
-        this.editorArea = editorArea;
+    public CommandOpen(Session session){
+        this.session = session;
     }
 
     @Override
     public void execute() {
         System.out.println("Edit");
-        editorArea.open();
+        session.open();
     }
 }

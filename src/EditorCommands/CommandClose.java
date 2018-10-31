@@ -1,17 +1,17 @@
 package EditorCommands;
 
-import App.EditorArea;
+import BL.Session;
 
 public class CommandClose implements Command {
-    private EditorArea editorArea;
+    private Session session;
 
-    public CommandClose(EditorArea editorArea){
-        this.editorArea = editorArea;
+    public CommandClose(Session session){
+        this.session = session;
     }
 
     @Override
     public void execute() {
         System.out.println("Close");
-        editorArea.close();
+        session.close();
     }
 }

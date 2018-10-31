@@ -1,17 +1,18 @@
 package EditorCommands;
 
-import App.EditorArea;
+import App.EditorTabMenu;
+import BL.Session;
 
 public class CommandSave implements Command {
-    private EditorArea editorArea;
+    private Session session;
 
-    public CommandSave(EditorArea editorArea){
-        this.editorArea = editorArea;
+    public CommandSave(Session session){
+        this.session = session;
     }
 
     @Override
     public void execute() {
         System.out.println("Save");
-        editorArea.save(EditorArea.SAVE);
+        session.save(EditorTabMenu.SAVE);
     }
 }
