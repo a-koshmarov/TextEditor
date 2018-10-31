@@ -4,8 +4,11 @@ import BL.FileState;
 import BL.Session;
 import DAL.DAO.FileStateDAO;
 import DAL.DTO.FileStateDTO;
+import Utility.DirectoryListing;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLWriter;
@@ -30,31 +33,52 @@ public class EditorTabMenu extends JTabbedPane {
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         setTabPlacement(JTabbedPane.LEFT);
         setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 10));
+        addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                currentTab = (EditorTab)getSelectedComponent();
+                System.out.println(currentTab.getFileName());
+            }
+        });
     }
 
     private void init(){
+        String[] filesInDir = DirectoryListing.getListing(EditorTab.PATH);
+        Set<String> setOfFiles = Set.of(filesInDir);
         for (FileState fileState : session.getFiles()){
-            if (fileState.isOpened()){
-                newTab(fileState);
+            if (setOfFiles.contains(fileState.getFileName()+EditorTab.EXTENSION)) {
+                if (fileState.isOpened()) {
+                    File file = new File(EditorTab.PATH + fileState.getFileName() + EditorTab.EXTENSION);
+                    newTab(fileState);
+                    try {
+                        currentTab.setURL(file.toURI().toURL());
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                FileStateDAO.deleteFileState(fileState.getFileName());
             }
         }
     }
+
+
 
     public void newTab(){
         String fileName = JOptionPane.showInputDialog(this, "What's your filename?");
         FileState fileState = new FileState(session.getUser().getID(), fileName);
         FileStateDAO.addFileState(new FileStateDTO(fileState));
         currentTab = new EditorTab(fileState);
-        currentTab.setFocus();
+//        currentTab.setFocus();
         addTab(fileState.getFileName(), currentTab);
         setSelectedComponent(currentTab);
     }
 
     public void newTab(FileState fileState){
         currentTab = new EditorTab(fileState);
-        currentTab.setFocus();
         addTab(fileState.getFileName(), currentTab);
         setSelectedComponent(currentTab);
+//        currentTab.setFocus();
     }
 
     public void save(int state) {
@@ -97,26 +121,15 @@ public class EditorTabMenu extends JTabbedPane {
 
     // TODO rework
     public void open() {
-        File dir = new File(EditorTab.PATH);
-        File[] dirListing = dir.listFiles();
-        ArrayList<String> avFiles = new ArrayList<>();
+        String[] avFiles = DirectoryListing.getListing(EditorTab.PATH);
 
-        if (dirListing != null) {
-            for (File child : dirListing) {
-                if (child.isFile() && child.getName().endsWith(".html")) {
-                    avFiles.add(child.getName());
-                    System.out.println(child.getName());
-                }
-            }
-        }
 
-        if (avFiles.isEmpty()) {
+        if (avFiles.length == 0) {
             JOptionPane.showMessageDialog(this, "Directory does not contain any .html files");
         } else {
-            String[] files = avFiles.toArray(new String[avFiles.size()]);
             System.out.println("dir is not empty");
             String result = (String) JOptionPane.showInputDialog(this, "Выберите файл", "Открыть файл для редактирования",
-                    JOptionPane.QUESTION_MESSAGE, null, files, files[0]);
+                    JOptionPane.QUESTION_MESSAGE, null, avFiles, avFiles[0]);
 
             try {
                 Set<String> fileNames = FileStateDAO.getAllFileNames(session.getUser().getID());
@@ -135,9 +148,14 @@ public class EditorTabMenu extends JTabbedPane {
                 currentTab.setURL(file.toURI().toURL());
 
 
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public EditorTab getCurrentTab(){
+        return currentTab;
     }
 }

@@ -16,10 +16,10 @@ public class Session {
         this.user = user;
         this.files = new HashSet<>();
 
-        Set<FileStateDTO> filesDTO = FileStateDAO.getAllFileStates(user.getID());
-        for (FileStateDTO file : filesDTO){
-            files.add(new FileState(file));
-        }
+//        Set<FileStateDTO> filesDTO = FileStateDAO.getAllFileStates(user.getID());
+//        for (FileStateDTO file : filesDTO){
+//            files.add(new FileState(file));
+//        }
 
         this.editorMenu = new EditorTabMenu(this);
     }

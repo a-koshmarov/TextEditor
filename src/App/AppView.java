@@ -1,4 +1,4 @@
-package GUI;
+package App;
 
 import App.EditorTab;
 import App.EditorTabMenu;
@@ -17,7 +17,6 @@ import java.util.HashMap;
 
 public class AppView extends JFrame implements ActionListener, CaretListener {
     private HashMap<Object, Command> _commandsByItem; // Commands associated with menu items
-//    private EditorTabMenu tabMenu;
     private Session session;
 
     public AppView(Session session) {
@@ -32,7 +31,6 @@ public class AppView extends JFrame implements ActionListener, CaretListener {
         JMenuBar mb = new JMenuBar();
         JMenu file, edit;
         JMenuItem newFile, openFile, saveFile, saveFileAs, closeAction;
-        JButton help;
 
         // Add action listeners and accelerators to the menu items
 
@@ -100,8 +98,7 @@ public class AppView extends JFrame implements ActionListener, CaretListener {
                 Color color = _colorsByItem.get(jmi);
                 SimpleAttributeSet as = new SimpleAttributeSet();
                 as.addAttribute(StyleConstants.Foreground, color);
-//                editor.setCharacterAttributes(as, false);
-//                curColor = color;
+                session.getEditorMenu().getCurrentTab().setColor(color);
             }
         };
 

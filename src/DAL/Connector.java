@@ -4,16 +4,20 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConnectionFactory {
-    private static final String URL = "jdbc:sqlite:db/TextEditor.db";
+public class Connector {
+    private final String URL = "jdbc:sqlite:db/TextEditor.db";
+    private static Connection connection;
 
-    public static Connection getConnection(){
-        Connection connection = null;
+    public Connector(){
+        connection = null;
         try{
             connection = DriverManager.getConnection(URL);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Connection getConnection(){
         return connection;
     }
 }

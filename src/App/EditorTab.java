@@ -3,10 +3,7 @@ package App;
 import BL.FileState;
 
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.Document;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
+import javax.swing.text.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
@@ -43,10 +40,10 @@ public class EditorTab extends JPanel{
         this.italic = fileState.isItalic();
         this.bold = fileState.isBold();
 
-        SimpleAttributeSet sat = new SimpleAttributeSet();
         editor = new EditorArea();
-        editor.setCaretPosition(0);
-        sat.addAttribute(StyleConstants.Foreground, color);
+        MutableAttributeSet sat = new SimpleAttributeSet();
+
+        sat.addAttribute(StyleConstants.Foreground, Color.BLUE);
         sat.addAttribute(StyleConstants.Italic, italic);
         sat.addAttribute(StyleConstants.Bold, bold);
         editor.setCharacterAttributes(sat, false);
