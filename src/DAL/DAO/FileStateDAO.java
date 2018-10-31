@@ -14,17 +14,20 @@ public class FileStateDAO implements DAO<FileStateDTO> {
 
     private Connection conn;
 
-    FileStateDAO() {
+    public FileStateDAO() {
         conn = Connector.getConnection();
     }
 
     public Set<FileStateDTO> getAllFileStates(int ID) throws SQLException {
+        System.out.println("Transaction: Getting file states");
+
         String sql = "select * from FileState where userID=?";
         Set<FileStateDTO> files = new HashSet<>();
 
         PreparedStatement statement = conn.prepareStatement(sql);
         statement.setInt(1, ID);
         ResultSet rs = statement.executeQuery();
+        conn.commit();
 
         while (rs.next()) {
             files.add(extract(rs));
@@ -40,6 +43,7 @@ public class FileStateDAO implements DAO<FileStateDTO> {
         PreparedStatement statement = conn.prepareStatement(sql);
         statement.setInt(1, ID);
         ResultSet rs = statement.executeQuery();
+        conn.commit();
 
         while (rs.next()) {
             files.add(rs.getString("fileName"));
@@ -60,6 +64,7 @@ public class FileStateDAO implements DAO<FileStateDTO> {
         statement.setInt(6, file.getBold());
         statement.setInt(7, file.getOpened());
         statement.executeUpdate();
+        conn.commit();
     }
 
     @Override
@@ -76,6 +81,7 @@ public class FileStateDAO implements DAO<FileStateDTO> {
         statement.setInt(6, file.getUserID());
         statement.setString(7, file.getFileName());
         statement.executeUpdate();
+        conn.commit();
     }
 
     @Override
@@ -85,6 +91,7 @@ public class FileStateDAO implements DAO<FileStateDTO> {
         PreparedStatement statement = conn.prepareStatement(sql);
         statement.setString(1, file.getFileName());
         statement.executeUpdate();
+        conn.commit();
     }
 
     @Override
@@ -95,6 +102,8 @@ public class FileStateDAO implements DAO<FileStateDTO> {
         statement.setInt(1, file.getUserID());
         statement.setString(2, file.getFileName());
         ResultSet rs = statement.executeQuery();
+        conn.commit();
+
         if (rs.next()) {
             return extract(rs);
         }

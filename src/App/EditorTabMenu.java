@@ -57,7 +57,7 @@ public class EditorTabMenu extends JTabbedPane {
                     }
                 }
             } else {
-                FileStateDAO.deleteFileState(fileState.getFileName());
+//                FileStateDAO.deleteF(fileState.getFileName());
             }
         }
     }
@@ -67,7 +67,7 @@ public class EditorTabMenu extends JTabbedPane {
     public void newTab(){
         String fileName = JOptionPane.showInputDialog(this, "What's your filename?");
         FileState fileState = new FileState(session.getUser().getID(), fileName);
-        FileStateDAO.addFileState(new FileStateDTO(fileState));
+//        FileStateDAO.addFileState(new FileStateDTO(fileState));
         currentTab = new EditorTab(fileState);
 //        currentTab.setFocus();
         addTab(fileState.getFileName(), currentTab);
@@ -88,7 +88,7 @@ public class EditorTabMenu extends JTabbedPane {
                 currentTab.setFileName(name);
                 currentTab.setFocus();
                 setTitleAt(getSelectedIndex(), name);
-                FileStateDAO.addFileState(new FileStateDTO(currentTab.getFileState()));
+//                FileStateDAO.addFileState(new FileStateDTO(currentTab.getFileState()));
             } else {
                 return;
             }
@@ -114,7 +114,7 @@ public class EditorTabMenu extends JTabbedPane {
         save(SAVE);
         FileState fileState = currentTab.getFileState();
         fileState.setOpened(false);
-        FileStateDAO.updateFileState(new FileStateDTO(fileState));
+//        FileStateDAO.updateFileState(new FileStateDTO(fileState));
         remove(currentTab);
     }
 
@@ -132,19 +132,19 @@ public class EditorTabMenu extends JTabbedPane {
                     JOptionPane.QUESTION_MESSAGE, null, avFiles, avFiles[0]);
 
             try {
-                Set<String> fileNames = FileStateDAO.getAllFileNames(session.getUser().getID());
+//                Set<String> fileNames = FileStateDAO.getAllFileNames(session.getUser().getID());
                 File file = new File(EditorTab.PATH + result);
                 String fileName = result.replace(EditorTab.EXTENSION, "");
                 FileState fileState;
 
-                if (fileNames.contains(fileName)){
-                    fileState = new FileState(FileStateDAO.getFileState(session.getUser().getID(), fileName));
-                } else {
-                    fileState = new FileState(session.getUser().getID(), fileName);
-                    FileStateDAO.addFileState(new FileStateDTO(fileState));
-                }
-
-                newTab(fileState);
+//                if (fileNames.contains(fileName)){
+//                    fileState = new FileState(FileStateDAO.getFileState(session.getUser().getID(), fileName));
+//                } else {
+//                    fileState = new FileState(session.getUser().getID(), fileName);
+//                    FileStateDAO.addFileState(new FileStateDTO(fileState));
+//                }
+//
+//                newTab(fileState);
                 currentTab.setURL(file.toURI().toURL());
 
 

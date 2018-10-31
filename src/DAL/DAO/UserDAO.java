@@ -60,6 +60,7 @@ public class UserDAO implements DAO<UserDTO> {
 
     @Override
     public UserDTO get(UserDTO user) throws SQLException {
+        System.out.println("Getting user");
         String sql = "select * from Users where userName=? and password=?";
 
         PreparedStatement statement = conn.prepareStatement(sql);

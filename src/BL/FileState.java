@@ -92,6 +92,6 @@ public class FileState {
 
     @Override
     public String toString() {
-        return String.format("%s %s %s %s", userID, fileName, cursor, opened);
+        return String.format("%s, cursorPos: %s, isItalic: %s, isBold: %s, isOpened: %s", fileName, cursor, italic, bold, opened);
     }
 }

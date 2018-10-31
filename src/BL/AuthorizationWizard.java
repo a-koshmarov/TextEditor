@@ -1,33 +1,33 @@
 package BL;
 
-import DAL.DAO.UserDAO;
+import DAL.DAO.DAO;
 import DAL.DTO.UserDTO;
 import Utility.HashGenerator;
 import Utility.Logger;
 
-import java.sql.SQLException;
-
 public class AuthorizationWizard {
 
-    private static UserDAO userDAO = new UserDAO();
+    private final DAO<UserDTO> userDAO;
 
-    public static void registerUser(String userName, String pass) {
+    public AuthorizationWizard(DAO<UserDTO> userDAO){
+        this.userDAO = userDAO;
+    }
+
+    public void registerUser(String userName, String pass) {
         String encrypted = HashGenerator.getHash(pass);
 
-        Logger.measureTime(()-> userDAO.add(new UserDTO(userName, encrypted)));
+        Logger.log(() -> userDAO.add(new UserDTO(userName, encrypted)));
 
         System.out.println("User added successfully");
     }
 
-    public static User logInUser(String userName, String pass) {
+    public User logInUser(String userName, String pass) {
         String encrypted = HashGenerator.getHash(pass);
         UserDTO userDTO;
-        try {
-            userDTO = userDAO.get(new UserDTO(userName, encrypted));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
+        userDTO = Logger.logWithReturn(
+                () -> userDAO.get(new UserDTO(userName, encrypted))
+        );
         if (userDTO == null) {
             return null;
         }
