@@ -1,26 +1,25 @@
 package Utility;
 
-import java.io.OutputStream;
+import java.io.PrintStream;
 
 public class Logger {
 
     private static Logger logger = new Logger();
-    private OutputStream os;
+    private PrintStream stream = System.out;
 
     private Logger(){
-
     }
 
     public static Logger getInstance(){
         return logger;
     }
 
-    public void setOutput(OutputStream os){
-        this.os = os;
+    public void setOutput(PrintStream stream){
+        this.stream = stream;
     }
 
     public void log(TransactionWithException transaction){
-        this.os.write();println("-- Start of transaction");
+        this.stream.println("-- Start of transaction");
         try {
             double startTime = System.nanoTime();
             transaction.run();
@@ -30,8 +29,8 @@ public class Logger {
         }
     }
 
-    public static <T> T logWithReturn(TransactionWithReturn<T> transaction){
-        System.out.println("-- Start of transaction");
+    public <T> T logWithReturn(TransactionWithReturn<T> transaction){
+        this.stream.println("-- Start of transaction");
         try {
             double startTime = System.nanoTime();
             T object = transaction.runWithReturn();
