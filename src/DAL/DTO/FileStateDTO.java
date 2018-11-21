@@ -3,35 +3,28 @@ package DAL.DTO;
 import BL.FileState;
 import Utility.CustomColor;
 
+import javax.swing.text.DateFormatter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 public class FileStateDTO {
-    private int userID;
     private String fileName;
-    private int cursor;
-    private int color;
-    private int italic;
-    private int bold;
-    private int opened;
+    private String ID;
+    private String PID;
+    private String content;
+    private String  dateTime;
+    private int version;
 
-    public FileStateDTO(){
-    }
-
-    public FileStateDTO(FileState fileState){
-        this.userID = fileState.getUserID();
-        this.fileName = fileState.getFileName();
-        this.cursor = fileState.getCursor();
-        CustomColor customColor = new CustomColor();
-        this.color = customColor.getIndexByColor(fileState.getColor());
-        this.italic = fileState.isItalic() ? 1 : 0;
-        this.bold = fileState.isBold() ? 1 : 0;
-        this.opened = fileState.isOpened() ? 1 : 0;
-    }
-
-    public int getUserID() {
-        return userID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public FileStateDTO(String fileName, String ID, String PID, String content, String dateTime, int version){
+        this.fileName = fileName;
+        this.ID = ID;
+        this.PID = PID;
+        this.content = content;
+        this.dateTime = dateTime;
+        this.version = version;
     }
 
     public String getFileName() {
@@ -42,43 +35,43 @@ public class FileStateDTO {
         this.fileName = fileName;
     }
 
-    public int getCursor() {
-        return cursor;
+    public String getID() {
+        return ID;
     }
 
-    public void setCursor(int cursor) {
-        this.cursor = cursor;
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
-    public int getColor() {
-        return color;
+    public String getPID() {
+        return PID;
     }
 
-    public void setColor(int color) {
-        this.color = color;
+    public void setPID(String PID) {
+        this.PID = PID;
     }
 
-    public int getItalic() {
-        return italic;
+    public String getContent() {
+        return content;
     }
 
-    public void setItalic(int italic) {
-        this.italic = italic;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public int getBold() {
-        return bold;
+    public String getDateTime() {
+        return dateTime;
     }
 
-    public void setBold(int bold) {
-        this.bold = bold;
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 
-    public int getOpened() {
-        return opened;
+    public int getVersion() {
+        return version;
     }
 
-    public void setOpened(int opened) {
-        this.opened = opened;
+    public void setVersion(int version) {
+        this.version = version;
     }
 }

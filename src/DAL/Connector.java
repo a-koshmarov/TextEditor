@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+
 public class Connector {
     private final String URL = "jdbc:sqlite:db/TextEditor.db";
     private static Connection connection;

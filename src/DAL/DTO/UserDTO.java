@@ -1,47 +1,32 @@
 package DAL.DTO;
 
-import BL.User;
-
 public class UserDTO {
-    private int ID;
+    private String ID;
     private String userName;
     private String password;
+    private int position;
 
-    public UserDTO(){
-    }
-
-    public UserDTO(User user){
-        this.ID = user.getID();
-        this.userName = user.getUserName();
-        this.password = user.getPassword();
-    }
-
-    public UserDTO(String userName, String password){
+    public UserDTO(String ID, String userName, String password, int position){
+        this.ID = ID;
         this.userName = userName;
         this.password = password;
+        this.position = position;
     }
 
-    public int getID() {
+    public String getID() {
         return ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
     }
 
     public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public int getPosition() {
+        return position;
     }
+
 }

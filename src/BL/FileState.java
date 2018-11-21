@@ -1,45 +1,53 @@
 package BL;
 
 import DAL.DTO.FileStateDTO;
-import Utility.CustomColor;
 
-import java.awt.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
-public class FileState {
-    private int userID;
+public class FileState implements Comparable<FileState> {
     private String fileName;
-    private int cursor;
-    private Color color;
-    private boolean italic;
-    private boolean bold;
-    private boolean opened;
+    private String ID;
+    private String PID;
+    private String OID;
+    private String content;
+    private String dateTime;
+    private int version = 0;
+    private int access = 0;
+    private boolean personal = false;
 
-    public FileState(int ID, String fileName){
-        this.userID = ID;
+
+    public FileState(String fileName){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         this.fileName = fileName;
-        this.cursor = 0;
-        this.color = Color.BLACK;
-        this.italic = false;
-        this.bold = false;
-        this.opened = true;
+        this.content = "";
+        this.ID = UUID.randomUUID().toString();
+        this.PID = this.ID;
+        this.dateTime = dtf.format(LocalDateTime.now());
+    }
+
+    public FileState(String ID, String fileName){
+        this(fileName);
+        this.ID = ID;
+    }
+
+    public FileState(String fileName, String OID, int access){
+        this(fileName);
+        if (!OID.isEmpty()) {
+            this.personal = true;
+            this.OID = OID;
+        }
+        this.access = access;
     }
 
     public FileState(FileStateDTO file){
-        this.userID = file.getUserID();
         this.fileName = file.getFileName();
-        this.cursor = file.getCursor();
-        this.color = CustomColor.getColorByIndex(file.getColor());
-        this.italic = file.getItalic() == 1;
-        this.bold = file.getBold() == 1;
-        this.opened = file.getOpened() == 1;
-    }
-
-    public int getUserID() {
-        return userID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
+        this.ID = file.getID();
+        this.PID = file.getPID();
+        this.content = file.getContent();
+        this.dateTime = file.getDateTime();
+        this.version = file.getVersion();
     }
 
     public String getFileName() {
@@ -50,48 +58,53 @@ public class FileState {
         this.fileName = fileName;
     }
 
-    public int getCursor() {
-        return cursor;
+    public String getID() {
+        return ID;
     }
 
-    public void setCursor(int cursor) {
-        this.cursor = cursor;
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
-    public Color getColor() {
-        return color;
+    public String getPID() {
+        return PID;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
+    public void setPID(String PID) {
+        this.PID = PID;
     }
 
-    public boolean isItalic() {
-        return italic;
+    public String getContent() {
+        return content;
     }
 
-    public void setItalic(boolean italic) {
-        this.italic = italic;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public boolean isBold() {
-        return bold;
+    public String getDate() {
+        return dateTime;
     }
 
-    public void setBold(boolean bold) {
-        this.bold = bold;
+    public int getVersion() {
+        return version;
     }
 
-    public boolean isOpened() {
-        return opened;
+    public void setVersion(int version) {
+        this.version = version;
     }
 
-    public void setOpened(boolean opened) {
-        this.opened = opened;
+    public FileStateDTO getFileStateDTO(){
+        return new FileStateDTO(fileName, ID, PID, content, dateTime, version);
     }
 
     @Override
     public String toString() {
-        return String.format("%s, cursorPos: %s, isItalic: %s, isBold: %s, isOpened: %s", fileName, cursor, italic, bold, opened);
+        return  "no formatting yet :(";
+    }
+
+    @Override
+    public int compareTo(FileState o) {
+        return 0;
     }
 }

@@ -29,7 +29,7 @@ public class UserDAO implements DAO<UserDTO> {
 
     @Override
     public void add(UserDTO user) throws SQLException {
-        String sql = "insert into Users(userName, password) values (?, ?)";
+        String sql = "insert into Users values (?, ?, ?, ?)";
 
         PreparedStatement statement = conn.prepareStatement(sql);
         statement.setString(1, user.getUserName());
@@ -39,12 +39,13 @@ public class UserDAO implements DAO<UserDTO> {
 
     @Override
     public void update(UserDTO user) throws SQLException {
-        String sql = "update Users set userName=?, password=? where ID=?";
+        String sql = "update Users set userName=?, password=?, positon=? where ID=?";
 
         PreparedStatement statement = conn.prepareStatement(sql);
         statement.setString(1, user.getUserName());
         statement.setString(2, user.getPassword());
-        statement.setInt(3, user.getID());
+        statement.setInt(3, user.getPosition());
+        statement.setString(4, user.getID());
         statement.executeUpdate();
 
     }
@@ -54,7 +55,7 @@ public class UserDAO implements DAO<UserDTO> {
         String sql = "delete from Users where ID=?";
 
         PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setInt(1, user.getID());
+        statement.setString(1, user.getID());
         statement.executeUpdate();
     }
 
@@ -75,12 +76,10 @@ public class UserDAO implements DAO<UserDTO> {
 
     @Override
     public UserDTO extract(ResultSet rs) throws SQLException {
-        UserDTO user = new UserDTO();
-
-        user.setID(rs.getInt("ID"));
-        user.setUserName(rs.getString("userName"));
-        user.setPassword(rs.getString("password"));
-
-        return user;
+        return new UserDTO(
+                rs.getString("ID"),
+                rs.getString("userName"),
+                rs.getString("password"),
+                rs.getInt("position"));
     }
 }

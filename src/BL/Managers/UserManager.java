@@ -1,4 +1,6 @@
-package BL;
+package BL.Managers;
+
+import BL.User;
 
 public class UserManager {
     private User user;

@@ -2,6 +2,7 @@ package DAL.DAO;
 
 import DAL.Connector;
 import DAL.DTO.FileStateDTO;
+import Utility.Tuple;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,95 +13,51 @@ import java.util.Set;
 
 public class FileStateDAO implements DAO<FileStateDTO> {
 
-    private Connection conn;
-
-    public FileStateDAO() {
-        conn = Connector.getConnection();
-    }
-
-    public Set<FileStateDTO> getAllFileStates(int ID) throws SQLException {
-        System.out.println("Transaction: Getting file states");
-
-        String sql = "select * from FileState where userID=?";
-        Set<FileStateDTO> files = new HashSet<>();
-
-        PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setInt(1, ID);
-        ResultSet rs = statement.executeQuery();
-        conn.commit();
-
-        while (rs.next()) {
-            files.add(extract(rs));
-        }
-        return files;
-    }
-
-    public static Set<String> getAllFileNames(int ID) throws SQLException {
-        Connection conn = Connector.getConnection();
-        String sql = "select fileName from FileState where userID=?";
-        Set<String> files = new HashSet<>();
-
-        PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setInt(1, ID);
-        ResultSet rs = statement.executeQuery();
-        conn.commit();
-
-        while (rs.next()) {
-            files.add(rs.getString("fileName"));
-        }
-        return files;
-    }
+    private Connection conn = Connector.getConnection();
 
     @Override
     public void add(FileStateDTO file) throws SQLException {
-        String sql = "insert into FileState values (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "insert into FileState values (?, ?, ?, ?, ?, ?)";
 
         PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setInt(1, file.getUserID());
-        statement.setString(2, file.getFileName());
-        statement.setInt(3, file.getCursor());
-        statement.setInt(4, file.getColor());
-        statement.setInt(5, file.getItalic());
-        statement.setInt(6, file.getBold());
-        statement.setInt(7, file.getOpened());
+        statement.setString(1, file.getFileName());
+        statement.setString(2, file.getID());
+        statement.setString(3, file.getPID());
+        statement.setString(4, file.getContent());
+        statement.setString(5, file.getDateTime());
+        statement.setInt(6, file.getVersion());
         statement.executeUpdate();
         conn.commit();
     }
 
     @Override
     public void update(FileStateDTO file) throws SQLException {
-        String sql = "update FileState set cursorPos=?, color=?, italic=?, bold=?, opened=? " +
-                "where userID=? and fileName=?";
+        String sql = "update FileState set fileName=?, content=? where ID=?";
 
         PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setInt(1, file.getCursor());
-        statement.setInt(2, file.getColor());
-        statement.setInt(3, file.getItalic());
-        statement.setInt(4, file.getBold());
-        statement.setInt(5, file.getOpened());
-        statement.setInt(6, file.getUserID());
-        statement.setString(7, file.getFileName());
+        statement.setString(1, file.getFileName());
+        statement.setString(2, file.getContent());
+        statement.setString(3, file.getID());
         statement.executeUpdate();
         conn.commit();
     }
 
     @Override
     public void delete(FileStateDTO file) throws SQLException {
-        String sql = "delete from FileState where fileName=?";
+        String sql = "delete from FileState where ID=?";
 
         PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setString(1, file.getFileName());
+        statement.setString(1, file.getID());
         statement.executeUpdate();
         conn.commit();
     }
 
     @Override
     public FileStateDTO get(FileStateDTO file) throws SQLException {
-        String sql = "select * from FileState where userID=? and fileName=?";
+        String sql = "select * from FileState where ID = ?";
 
         PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setInt(1, file.getUserID());
-        statement.setString(2, file.getFileName());
+        statement.setString(1, file.getID());
         ResultSet rs = statement.executeQuery();
         conn.commit();
 
@@ -112,15 +69,44 @@ public class FileStateDAO implements DAO<FileStateDTO> {
 
     @Override
     public FileStateDTO extract(ResultSet rs) throws SQLException {
-        FileStateDTO file = new FileStateDTO();
+        return new FileStateDTO(
+                rs.getString("fileName"),
+                rs.getString("ID"),
+                rs.getString("PID"),
+                rs.getString("content"),
+                rs.getString("dateTime"),
+                rs.getInt("version"));
+    }
 
-        file.setUserID(rs.getInt("userID"));
-        file.setFileName(rs.getString("fileName"));
-        file.setCursor(rs.getInt("cursorPos"));
-        file.setColor(rs.getInt("color"));
-        file.setItalic(rs.getInt("italic"));
-        file.setBold(rs.getInt("bold"));
-        file.setOpened(rs.getInt("opened"));
-        return file;
+    public Set<FileStateDTO> getAllVersions(int PID) throws SQLException {
+        System.out.println("Transaction: Getting file states");
+
+        String sql = "select * from FileState where PID=?";
+        Set<FileStateDTO> files = new HashSet<>();
+
+        PreparedStatement statement = conn.prepareStatement(sql);
+        statement.setInt(1, PID);
+        ResultSet rs = statement.executeQuery();
+        conn.commit();
+
+        while (rs.next()) {
+            files.add(extract(rs));
+        }
+        return files;
+    }
+
+    public static Set<Tuple<String, String>> getAllLastVersions() throws SQLException {
+        Connection conn = Connector.getConnection();
+        String sql = "select fileName, PID, ID, max(version) from FileState group by PID";
+        Set<Tuple<String, String>> files = new HashSet<>();
+
+        PreparedStatement statement = conn.prepareStatement(sql);
+        ResultSet rs = statement.executeQuery();
+        conn.commit();
+
+        while (rs.next()) {
+            files.add(new Tuple<>(rs.getString("fileName"), rs.getString("ID")));
+        }
+        return files;
     }
 }

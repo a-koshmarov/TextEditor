@@ -1,11 +1,9 @@
-import BL.AuthorizationWizard;
-import BL.Session;
+import BL.Managers.AuthorizationWizard;
+import BL.Managers.Session;
 import BL.User;
-import App.AppView;
 import DAL.Connector;
 
 import javax.swing.*;
-import java.util.Scanner;
 
 public class Main {
 
