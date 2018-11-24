@@ -32,8 +32,10 @@ public class UserDAO implements DAO<UserDTO> {
         String sql = "insert into Users values (?, ?, ?, ?)";
 
         PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setString(1, user.getUserName());
-        statement.setString(2, user.getPassword());
+        statement.setString(1, user.getID());
+        statement.setString(2, user.getUserName());
+        statement.setString(3, user.getPassword());
+        statement.setInt(4, user.getPosition());
         statement.executeUpdate();
     }
 

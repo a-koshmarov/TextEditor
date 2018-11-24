@@ -13,7 +13,8 @@ public class FileState implements Comparable<FileState> {
     private String OID;
     private String content;
     private String dateTime;
-    private int version = 0;
+    private String version;
+    private String message;
     private int access = 0;
     private boolean personal = false;
 
@@ -22,6 +23,7 @@ public class FileState implements Comparable<FileState> {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         this.fileName = fileName;
         this.content = "";
+        this.message = "";
         this.ID = UUID.randomUUID().toString();
         this.PID = this.ID;
         this.dateTime = dtf.format(LocalDateTime.now());
@@ -45,9 +47,13 @@ public class FileState implements Comparable<FileState> {
         this.fileName = file.getFileName();
         this.ID = file.getID();
         this.PID = file.getPID();
+        this.OID = file.getOID();
         this.content = file.getContent();
         this.dateTime = file.getDateTime();
         this.version = file.getVersion();
+        this.message = file.getMessage();
+        this.access = file.getAccess();
+        this.personal = file.getPersonal() == 1;
     }
 
     public String getFileName() {
@@ -60,10 +66,6 @@ public class FileState implements Comparable<FileState> {
 
     public String getID() {
         return ID;
-    }
-
-    public void setID(String ID) {
-        this.ID = ID;
     }
 
     public String getPID() {
@@ -82,25 +84,57 @@ public class FileState implements Comparable<FileState> {
         this.content = content;
     }
 
-    public String getDate() {
-        return dateTime;
-    }
-
-    public int getVersion() {
+    public String getVersion() {
         return version;
     }
 
-    public void setVersion(int version) {
+    public void setVersion(String version) {
         this.version = version;
     }
 
+    public String getOID() {
+        return OID;
+    }
+
+    public void setOID(String OID) {
+        this.OID = OID;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public int getAccess() {
+        return access;
+    }
+
+    public void setAccess(int access) {
+        this.access = access;
+    }
+
+    public boolean isPersonal() {
+        return personal;
+    }
+
+    public void setPersonal(boolean personal) {
+        this.personal = personal;
+    }
+
     public FileStateDTO getFileStateDTO(){
-        return new FileStateDTO(fileName, ID, PID, content, dateTime, version);
+        return new FileStateDTO(fileName, ID, PID, OID, content, dateTime, version, message, access, personal);
     }
 
     @Override
     public String toString() {
-        return  "no formatting yet :(";
+        return  String.format("fileName:%s ID:%s PID:%s ver:%s commit:%s", fileName, ID, PID, version, message);
     }
 
     @Override

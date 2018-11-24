@@ -5,7 +5,7 @@ import BL.User;
 public class UserManager {
     private User user;
 
-    UserManager(User user){
+    public UserManager(User user){
         this.user = user;
     }
 }

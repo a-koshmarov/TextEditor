@@ -5,15 +5,29 @@ import DAL.DAO.FileStateDAO;
 import DAL.DTO.FileStateDTO;
 import Utility.Logger;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 public class FileManager{
 
     private static FileStateDAO fileStateDAO = new FileStateDAO();
 
-    static void removeFile(FileState fileState){
+    public void removeFile(FileState fileState){
         Logger.getInstance().log(()->fileStateDAO.delete(fileState.getFileStateDTO()));
     }
 
-    static void newFile(FileState fileState){
+    public void newFile(FileState fileState){
         Logger.getInstance().log(()->fileStateDAO.add(fileState.getFileStateDTO()));
     }
+
+    public ArrayList<FileState> getBranch (String PID){
+        ArrayList<FileState> files = new ArrayList<>();
+        Set<FileStateDTO> fileStateDTOS = Logger.getInstance().logWithReturn(()-> fileStateDAO.getAllVersions(PID));
+        for (FileStateDTO dto : fileStateDTOS){
+            files.add(new FileState(dto));
+        }
+        return files;
+    }
+
+
 }

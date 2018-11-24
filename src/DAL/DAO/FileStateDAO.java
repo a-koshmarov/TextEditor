@@ -17,27 +17,35 @@ public class FileStateDAO implements DAO<FileStateDTO> {
 
     @Override
     public void add(FileStateDTO file) throws SQLException {
-        String sql = "insert into FileState values (?, ?, ?, ?, ?, ?)";
+        String sql = "insert into FileState values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement statement = conn.prepareStatement(sql);
         statement.setString(1, file.getFileName());
         statement.setString(2, file.getID());
         statement.setString(3, file.getPID());
-        statement.setString(4, file.getContent());
-        statement.setString(5, file.getDateTime());
-        statement.setInt(6, file.getVersion());
+        statement.setString(4, file.getOID());
+        statement.setString(5, file.getContent());
+        statement.setString(6, file.getDateTime());
+        statement.setString(7, file.getVersion());
+        statement.setString(8, file.getMessage());
+        statement.setInt(9, file.getAccess());
+        statement.setInt(10, file.getPersonal());
+
         statement.executeUpdate();
         conn.commit();
     }
 
     @Override
     public void update(FileStateDTO file) throws SQLException {
-        String sql = "update FileState set fileName=?, content=? where ID=?";
+        String sql = "update FileState set fileName=?, content=?, message=?, access=?  where ID=?";
 
         PreparedStatement statement = conn.prepareStatement(sql);
         statement.setString(1, file.getFileName());
         statement.setString(2, file.getContent());
-        statement.setString(3, file.getID());
+        statement.setString(3, file.getMessage());
+        statement.setInt(4, file.getAccess());
+        statement.setString(5, file.getID());
+
         statement.executeUpdate();
         conn.commit();
     }
@@ -73,19 +81,23 @@ public class FileStateDAO implements DAO<FileStateDTO> {
                 rs.getString("fileName"),
                 rs.getString("ID"),
                 rs.getString("PID"),
+                rs.getString("OID"),
                 rs.getString("content"),
                 rs.getString("dateTime"),
-                rs.getInt("version"));
+                rs.getString("version"),
+                rs.getString("message"),
+                rs.getInt("access"),
+                rs.getInt("personal") == 1);
     }
 
-    public Set<FileStateDTO> getAllVersions(int PID) throws SQLException {
-        System.out.println("Transaction: Getting file states");
+    public Set<FileStateDTO> getAllVersions(String PID) throws SQLException {
+        System.out.println("Transaction: Getting all versions of branch: " + PID);
 
         String sql = "select * from FileState where PID=?";
         Set<FileStateDTO> files = new HashSet<>();
 
         PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setInt(1, PID);
+        statement.setString(1, PID);
         ResultSet rs = statement.executeQuery();
         conn.commit();
 
