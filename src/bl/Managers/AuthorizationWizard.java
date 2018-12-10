@@ -1,4 +1,4 @@
-package bl.Managers;
+package bl.managers;
 
 import bl.User;
 import dal.dao.DAO;
@@ -25,18 +25,18 @@ public class AuthorizationWizard {
         return user;
     }
 
-    public User logInUser(String userName, String pass) {
-        String encrypted = HashGenerator.getHash(pass);
-        UserDTO userDTO;
-        User user = new User(userName, encrypted);
-
-        userDTO = Logger.getInstance().logWithReturn(
-                () -> userDAO.get(user.getUserDTO())
-        );
-
-        if (userDTO == null) {
-            return null;
-        }
-        return new User(userDTO);
-    }
+//    public User logInUser(String userName, String pass) {
+//        String encrypted = HashGenerator.getHash(pass);
+//        UserDTO userDTO;
+//        User user = new User(userName, encrypted);
+//
+//        userDTO = Logger.getInstance().logWithReturn(
+//                () -> userDAO.get(user.getUserDTO())
+//        );
+//
+//        if (userDTO == null) {
+//            return null;
+//        }
+//        return new User(userDTO);
+//    }
 }

@@ -39,6 +39,21 @@ public class UserDAO implements DAO<UserDTO> {
     }
 
     @Override
+    public void connect() throws SQLException {
+
+    }
+
+    @Override
+    public void close() throws SQLException {
+
+    }
+
+    @Override
+    public UserDTO get(String ID) throws SQLException {
+        return null;
+    }
+
+    @Override
     public void update(UserDTO user) throws SQLException {
         String sql = "update Users set userName=?, password=?, positon=? where ID=?";
 
@@ -60,7 +75,6 @@ public class UserDAO implements DAO<UserDTO> {
         statement.executeUpdate();
     }
 
-    @Override
     public UserDTO get(UserDTO user) throws SQLException {
         System.out.println("Getting user");
         String sql = "select * from Users where userName=? and password=?";

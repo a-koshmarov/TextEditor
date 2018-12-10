@@ -16,6 +16,16 @@ public class EditorFileStateDAO implements DAO<FileStateDTO> {
     private Connection conn = Connector.getConnection();
 
     @Override
+    public void connect() throws SQLException {
+
+    }
+
+    @Override
+    public void close() throws SQLException {
+
+    }
+
+    @Override
     public void add(FileStateDTO file) throws SQLException {
         String sql = "insert into FileState values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -29,7 +39,7 @@ public class EditorFileStateDAO implements DAO<FileStateDTO> {
         statement.setString(7, file.getVersion());
         statement.setString(8, file.getMessage());
         statement.setInt(9, file.getAccess());
-        statement.setInt(10, file.getPersonal());
+        statement.setInt(10, file.getLast());
 
         statement.executeUpdate();
         conn.commit();

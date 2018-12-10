@@ -1,4 +1,4 @@
-package bl.Managers;
+package bl.managers;
 
 import bl.FileBranch;
 import bl.User;

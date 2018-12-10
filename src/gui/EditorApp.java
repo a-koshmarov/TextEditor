@@ -1,7 +1,7 @@
 package gui;
 
 import bl.FileState;
-import bl.Managers.FileManager;
+import bl.managers.FileManager;
 import dal.Connector;
 import gui.controller.EditorController;
 import gui.model.EditorModel;

@@ -1,8 +1,8 @@
 package gui.model;
 
 import bl.FileState;
-import bl.Managers.FileManager;
-import bl.Managers.UserManager;
+import bl.managers.FileManager;
+import bl.managers.UserManager;
 
 public class EditorModel {
 
@@ -12,13 +12,21 @@ public class EditorModel {
     private FileManager fileManager;
     private UserManager userManager;
 
-    public void save(FileState fileState, String content, int state){
-        if (fileState == null) {
-            fileState = new FileState("new");
-            fileState.setContent(content);
-            fileManager.newFile(fileState);
-        } else {
-            fileState.setContent(content);
-        }
+    public EditorModel(){
+        this.fileManager = new FileManager();
+//        this.userManager = new UserManager();
+    }
+
+    public void save(FileState fileState, int state){
+        // TODO: 29.11.2018 create update
+    }
+
+    public void create(FileState fileState){
+        fileManager.newFile(fileState);
+    }
+
+    public boolean exists(String ID){
+        return fileManager.exists(ID);
     }
 }
+

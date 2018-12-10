@@ -6,8 +6,9 @@ public class FileBranch {
     private String ID;
     private FileState HEAD;
 
-    public FileBranch() {
+    public FileBranch(FileState fileState) {
         this.ID = UUID.randomUUID().toString();
+        this.HEAD = fileState;
     }
 
     public void setHEAD(FileState HEAD) {

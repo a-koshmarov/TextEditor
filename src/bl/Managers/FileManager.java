@@ -1,7 +1,8 @@
-package bl.Managers;
+package bl.managers;
 
 import bl.FileState;
 import dal.dao.EditorFileStateDAO;
+import dal.dao.FileStateDAO;
 import dal.dto.FileStateDTO;
 import utility.Logger;
 
@@ -27,6 +28,15 @@ public class FileManager{
             files.add(new FileState(dto));
         }
         return files;
+    }
+
+    public boolean exists(String ID){
+        FileStateDTO dto = Logger.getInstance().logWithReturn(() -> editorFileStateDAO.get(ID));
+        if (dto != null){
+           return true;
+        } else {
+            return false;
+        }
     }
 
 
