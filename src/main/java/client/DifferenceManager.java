@@ -64,6 +64,7 @@ public class DifferenceManager extends Task<String> {
             if (i%100==0){
                 notifyAllListeners(i, 1000);
             }
+            
             Thread.sleep(5);
         }
 
