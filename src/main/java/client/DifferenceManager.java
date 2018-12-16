@@ -1,6 +1,6 @@
 package client;
 
-import client.managerInterface.ProgressListener;
+import client.managerInterface.GenericProgressListener;
 import dao.FileStateEntity;
 import javafx.concurrent.Task;
 
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DifferenceManager extends Task<String> {
 
-    private List<ProgressListener> listeners = new ArrayList<>();
+    private List<GenericProgressListener> listeners = new ArrayList<>();
     private FileStateEntity firstFile;
     private FileStateEntity secondFile;
 
@@ -31,6 +31,9 @@ public class DifferenceManager extends Task<String> {
         Iterator<String> it = secondSplit.iterator();
 
         List<String> result = new ArrayList<>();
+
+        int total = firstSplit.length>=secondSplit.size()?firstSplit.length:secondSplit.size();
+        int current = 0;
 
         for (String firstLine : firstSplit) {
             if (it.hasNext()) {
@@ -57,7 +60,22 @@ public class DifferenceManager extends Task<String> {
             }
         }
 
+        for (int i = 0; i <= 1000; i++) {
+            if (i%100==0){
+                notifyAllListeners(i, 1000);
+            }
+            Thread.sleep(5);
+        }
+
         return String.join("\n", result);
+    }
+
+    public void registerListener(GenericProgressListener listener){
+        this.listeners.add(listener);
+    }
+
+    private void notifyAllListeners(int progress, int total){
+        this.listeners.forEach(listener -> listener.onProgressChange(progress, total));
     }
 
 }

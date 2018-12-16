@@ -39,7 +39,7 @@
                <VBox.margin>
                   <Insets bottom="5.0" />
                </VBox.margin></ListView>
-            <ProgressBar prefHeight="20.0" prefWidth="180.0" progress="0.0" />
+            <ProgressBar fx:id="progressBar" prefHeight="20.0" prefWidth="180.0" progress="0.0" />
          </children>
          <BorderPane.margin>
             <Insets left="10.0" right="10.0" top="10.0" />

@@ -35,6 +35,9 @@ public class EditorController {
 //    }
 
     @FXML
+    private ProgressBar progressBar;
+
+    @FXML
     private Label commitField;
 
     @FXML
@@ -57,9 +60,9 @@ public class EditorController {
         FileStateEntity selectedItem = fileList.getSelectionModel().getSelectedItem();
         if (selectedItem!=fileState){
             DifferenceManager task = new DifferenceManager(selectedItem, fileState);
-            task.setOnRunning((taskEvent)->{
-                diffButton.setDisable(true);
-            });
+            task.registerListener(new ProgressBarListener(progressBar));
+
+            task.setOnRunning((taskEvent)-> diffButton.setDisable(true));
 
             task.setOnSucceeded((taskEvent)->{
                 versionField.setText(String.format("v. %s -> v. %s", selectedItem.getVersion(), fileState.getVersion()));
