@@ -65,7 +65,7 @@ public class DifferenceManager extends Task<String> {
                 notifyAllListeners(i, 1000);
             }
             
-            Thread.sleep(5);
+            Thread.sleep(2);
         }
 
         return String.join("\n", result);

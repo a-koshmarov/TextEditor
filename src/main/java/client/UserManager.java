@@ -88,8 +88,9 @@ public class UserManager implements GenericUserManager {
 
     @Override
     public void createNewUser(String userName, String pass) {
-        saveOrUpdate(new UserEntity(userName, pass));
-        Context.getInstance().authorize(userName, pass);
+        String hashedPass = HashGenerator.getHash(pass);
+        saveOrUpdate(new UserEntity(userName, hashedPass));
+        Context.getInstance().authorize(userName, hashedPass);
     }
 }
 

@@ -6,6 +6,7 @@ import client.managerInterface.GenericFileStateManager;
 import client.managerInterface.GenericUserManager;
 import dao.BranchEntity;
 import dao.FileStateEntity;
+import dao.UserEntity;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -29,10 +30,6 @@ public class EditorController {
     private GenericBranchManager branchManager = new BranchManager();
 
     private GenericUserManager userManager = new UserManager();
-
-//    public EditorController(UserEntity userEntity){
-//        this.userEntity = userEntity;
-//    }
 
     @FXML
     private ProgressBar progressBar;
@@ -68,6 +65,7 @@ public class EditorController {
                 versionField.setText(String.format("v. %s -> v. %s", selectedItem.getVersion(), fileState.getVersion()));
                 textArea.setText(task.getValue());
                 diffButton.setDisable(false);
+                progressBar.setProgress(0);
             });
 
             ExecutorService executor = Executors.newFixedThreadPool(1);
@@ -146,7 +144,6 @@ public class EditorController {
 
     @FXML
     void initialize() {
-        userManager.authorize("bob dylan", "knock");
         branchSelector.getItems().addAll(userManager.getBranches(Context.getInstance().getUser()));
     }
 

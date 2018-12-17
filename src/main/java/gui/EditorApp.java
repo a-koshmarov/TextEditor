@@ -1,7 +1,7 @@
 package gui;
 
 import dao.HibernateSessionFactory;
-import gui.controller.EditorController;
+import gui.controller.AuthorizationController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,8 +11,7 @@ import javafx.stage.Stage;
 public class EditorApp extends Application {
 
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("EditorView.fxml"));
-        loader.setControllerFactory(t -> new EditorController());
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Authorization.fxml"));
 
         stage.setScene(new Scene(loader.load()));
         stage.setTitle("Text editor!");

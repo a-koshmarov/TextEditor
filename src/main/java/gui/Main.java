@@ -5,8 +5,7 @@ import client.FileManager;
 import client.UserManager;
 import client.managerInterface.GenericFileStateManager;
 import dao.HibernateSessionFactory;
-import gui.DifferenceDialog;
-import utility.StringDifference;
+
 
 public class Main{
 
