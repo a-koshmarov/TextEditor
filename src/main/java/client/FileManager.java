@@ -7,11 +7,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import utility.Logger;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
 public class FileManager implements GenericFileStateManager {
 
     private SessionFactory sessionFactory;

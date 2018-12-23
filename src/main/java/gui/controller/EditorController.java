@@ -14,10 +14,7 @@ import javafx.scene.input.MouseEvent;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -55,13 +52,13 @@ public class EditorController {
     @FXML
     void createDifference(ActionEvent event) {
         FileStateEntity selectedItem = fileList.getSelectionModel().getSelectedItem();
-        if (selectedItem!=fileState){
+        if (selectedItem != fileState) {
             DifferenceManager task = new DifferenceManager(selectedItem, fileState);
             task.registerListener(new ProgressBarListener(progressBar));
 
-            task.setOnRunning((taskEvent)-> diffButton.setDisable(true));
+            task.setOnRunning((taskEvent) -> diffButton.setDisable(true));
 
-            task.setOnSucceeded((taskEvent)->{
+            task.setOnSucceeded((taskEvent) -> {
                 versionField.setText(String.format("v. %s -> v. %s", selectedItem.getVersion(), fileState.getVersion()));
                 textArea.setText(task.getValue());
                 diffButton.setDisable(false);
@@ -77,6 +74,12 @@ public class EditorController {
     @FXML
     void branchChange(ActionEvent event) {
         listUpdate();
+        fileList.getSelectionModel().selectFirst();
+        fileState = fileList.getSelectionModel().getSelectedItem();
+
+        textArea.setText(fileState.getContent());
+        versionField.setText(String.format("v. %s", fileState.getVersion()));
+        textArea.setEditable(true);
     }
 
     @FXML
@@ -91,7 +94,7 @@ public class EditorController {
         } else if (event.getClickCount() == 2 && branchSelector.getValue() != null) {
             fileState = selectedState;
             textArea.setText(fileState.getContent());
-            versionField.setText(String.format("v. %s",fileState.getVersion()));
+            versionField.setText(String.format("v. %s", fileState.getVersion()));
             if (!fileState.isLast()) {
                 textArea.setEditable(false);
             } else {
@@ -107,7 +110,19 @@ public class EditorController {
 
     @FXML
     void onNew(ActionEvent event) {
+        BranchEntity branch = new BranchEntity(showQuestionDialog("hey! can i get a branch name", "enter your branchName here"));
+        FileStateEntity file = new FileStateEntity("");
+        branch.setFileStateByHead(file);
 
+        fileManager.saveOrUpdate(file);
+        branchManager.addFileState(branch, file);
+        branchManager.saveOrUpdate(branch);
+
+        file.setBranchByBid(branch);
+        fileManager.saveOrUpdate(file);
+
+        branchSelector.getItems().add(branch);
+        branchSelector.getSelectionModel().select(branch);
     }
 
     @FXML
@@ -117,9 +132,19 @@ public class EditorController {
     }
 
     @FXML
-    void onClose(ActionEvent event) {
-        fileState.setContent(textArea.getText());
-        branchManager.saveOrUpdate(fileState.getBranchByBid());
+    void onDelete(ActionEvent event) {
+        BranchEntity branch = branchSelector.getValue();
+        Collection<FileStateEntity> files = branch.getFileStatesById();
+
+        branch.setFileStateByHead(null);
+        branchManager.saveOrUpdate(branch);
+        branchManager.delete(branch);
+
+        for (FileStateEntity file : files) {
+            fileManager.delete(file);
+        }
+
+        branchSelector.getItems().remove(branch);
     }
 
     @FXML
@@ -127,7 +152,7 @@ public class EditorController {
         if (fileState.isLast()) {
             fileState.setContent(textArea.getText());
             fileState.setDate(formatCurrentDate());
-            fileState.setMessage(showQuestionDialog());
+            fileState.setMessage(showQuestionDialog("Wow, a commit message? So cool!", "Please enter your message:"));
             fileState.setLast(false);
             fileManager.saveOrUpdate(fileState);
             BranchEntity branch = fileState.getBranchByBid();
@@ -139,12 +164,16 @@ public class EditorController {
             branchManager.saveOrUpdate(branch);
             branchManager.addFileState(branch, fileState);
             listUpdate();
+
+            textArea.setText(fileState.getContent());
+            versionField.setText(String.format("v. %s", fileState.getVersion()));
         }
     }
 
     @FXML
     void initialize() {
         branchSelector.getItems().addAll(userManager.getBranches(Context.getInstance().getUser()));
+        this.textArea.setEditable(false);
     }
 
     private void listUpdate() {
@@ -160,11 +189,11 @@ public class EditorController {
         return dtf.format(LocalDateTime.now());
     }
 
-    private String showQuestionDialog() {
-        TextInputDialog dialog = new TextInputDialog("no message");
-        dialog.setTitle("Commit message input");
-        dialog.setHeaderText("Wow, a commit message? So cool!");
-        dialog.setContentText("Please enter your message:");
+    private String showQuestionDialog(String header, String content) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("User input");
+        dialog.setHeaderText(header);
+        dialog.setContentText(content);
 
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {

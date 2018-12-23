@@ -19,6 +19,7 @@ public class FileStateEntity {
     public FileStateEntity(){}
 
     public FileStateEntity(String content){
+        this.version = 1;
         this.content = content;
         this.last = true;
     }

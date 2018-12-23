@@ -11,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -32,7 +31,9 @@ public class AuthorizationController {
 
     @FXML
     void onLogin(ActionEvent event) throws IOException {
-        userManager.authorize(userField.getText(), passwordField.getText());
+//        userManager.authorize(userField.getText(), passwordField.getText());
+        userManager.authorize("bob dylan", "knock");
+
         if (Context.getInstance().isAuthorized()){
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("EditorView.fxml"));

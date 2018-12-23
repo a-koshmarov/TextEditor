@@ -34,6 +34,8 @@ public class DifferenceManager extends Task<String> {
 
         int total = firstSplit.length>=secondSplit.size()?firstSplit.length:secondSplit.size();
         int current = 0;
+        int diff = (total + 10 - 1) / 10;
+
 
         for (String firstLine : firstSplit) {
             if (it.hasNext()) {
@@ -51,6 +53,11 @@ public class DifferenceManager extends Task<String> {
                     result.add("- " + firstLine);
                 }
             }
+            current+=1;
+            if (current%diff==0){
+                notifyAllListeners(current, total);
+            }
+            Thread.sleep(10);
         }
 
         while (it.hasNext()) {
@@ -58,14 +65,11 @@ public class DifferenceManager extends Task<String> {
             if (!secondLine.isEmpty()) {
                 result.add("+ " + secondLine);
             }
-        }
-
-        for (int i = 0; i <= 1000; i++) {
-            if (i%100==0){
-                notifyAllListeners(i, 1000);
+            current+=1;
+            if (current%diff==0){
+                notifyAllListeners(current, total);
             }
-            
-            Thread.sleep(2);
+            Thread.sleep(10);
         }
 
         return String.join("\n", result);

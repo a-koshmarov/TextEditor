@@ -1,5 +1,7 @@
 package dao;
 
+import client.Context;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +16,11 @@ public class BranchEntity {
     private String fileName;
     private Collection<FileStateEntity> fileStatesById = new ArrayList<>();
     public BranchEntity(){}
+
+    public BranchEntity(String fileName){
+        this.fileName = fileName;
+        this.userByUid = Context.getInstance().getUser();
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +44,7 @@ public class BranchEntity {
     }
 
     @ManyToOne
-    @JoinColumn(name = "HEAD", referencedColumnName = "ID", nullable = false)
+    @JoinColumn(name = "HEAD", referencedColumnName = "ID", nullable = true)
     public FileStateEntity getFileStateByHead() {
         return fileStateByHead;
     }
