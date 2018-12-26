@@ -1,13 +1,14 @@
 package client;
 
-import client.managerInterface.GenericProgressListener;
 import dao.FileStateEntity;
+import gui.GenericProgressListener;
 import javafx.concurrent.Task;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
 
 public class DifferenceManager extends Task<String> {
 

@@ -4,7 +4,6 @@ import dao.BranchEntity;
 import dao.UserEntity;
 
 import java.util.Collection;
-import java.util.List;
 
 public interface GenericUserManager extends GenericManager<UserEntity> {
     UserEntity getUserEntity(String userName, String pass);

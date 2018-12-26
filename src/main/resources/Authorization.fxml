@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -11,27 +12,46 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="420.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.AuthorizationController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.AuthorizationController">
    <children>
-      <Label alignment="CENTER" layoutX="93.0" layoutY="42.0" prefHeight="53.0" prefWidth="245.0" text="Text Editor!" textAlignment="CENTER" textFill="#4a4a4a" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="90.0" AnchorPane.topAnchor="45.0">
+      <Label alignment="CENTER" layoutX="93.0" layoutY="42.0" prefHeight="53.0" prefWidth="245.0" text="Text Editor!" textAlignment="CENTER" textFill="#4a4a4a" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="90.0" AnchorPane.topAnchor="60.0">
          <font>
-            <Font name="DejaVu Sans Condensed Bold" size="34.0" />
+            <Font name="Script MT Bold" size="70.0" />
          </font>
       </Label>
-      <TextField fx:id="userField" layoutX="99.0" layoutY="150.0" prefHeight="35.0" prefWidth="233.0" promptText="username" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="90.0" />
-      <PasswordField fx:id="passwordField" layoutX="99.0" layoutY="235.0" prefHeight="35.0" prefWidth="233.0" promptText="password" AnchorPane.leftAnchor="90.0" AnchorPane.rightAnchor="90.0" />
-      <Label layoutX="99.0" layoutY="122.0" prefHeight="28.0" prefWidth="87.0" text="Username" textFill="#494949" AnchorPane.leftAnchor="90.0">
-         <font>
-            <Font name="DejaVu Sans Condensed Bold" size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="99.0" layoutY="207.0" prefHeight="28.0" prefWidth="87.0" text="Password" textFill="#494949" AnchorPane.leftAnchor="90.0">
-         <font>
-            <Font name="DejaVu Sans Condensed Bold" size="15.0" />
-         </font>
-      </Label>
-      <Button layoutX="92.0" layoutY="354.0" mnemonicParsing="false" onAction="#onLogin" prefHeight="35.0" prefWidth="102.0" text="Log In" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="90.0" />
-      <Button layoutX="230.0" layoutY="315.0" mnemonicParsing="false" onAction="#onRegister" prefHeight="35.0" prefWidth="102.0" text="Register" AnchorPane.bottomAnchor="45.0" AnchorPane.rightAnchor="90.0" />
-      <Label fx:id="error" alignment="CENTER" layoutX="109.0" layoutY="298.0" prefHeight="27.0" prefWidth="213.0" text="Wrong login or password." visible="false" />
+      <VBox layoutX="181.0" layoutY="164.0" prefHeight="247.0" prefWidth="340.0" AnchorPane.bottomAnchor="70.0">
+         <children>
+            <Label prefHeight="28.0" prefWidth="87.0" text="Username" textFill="#494949">
+               <font>
+                  <Font name="DejaVu Sans Condensed Bold" size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="userField" prefHeight="39.0" prefWidth="288.0" promptText="enter username">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </TextField>
+            <Label prefHeight="28.0" prefWidth="87.0" text="Password" textFill="#494949">
+               <font>
+                  <Font name="DejaVu Sans Condensed Bold" size="15.0" />
+               </font>
+            </Label>
+            <PasswordField fx:id="passwordField" prefHeight="39.0" prefWidth="288.0" promptText="enter password">
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </PasswordField>
+            <HBox prefHeight="39.0" prefWidth="376.0" spacing="10.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#onLogin" prefHeight="39.0" prefWidth="185.0" text="Log In" />
+                  <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onRegister" prefHeight="39.0" prefWidth="185.0" text="Register" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </HBox>
+            <Label fx:id="error" alignment="CENTER" prefHeight="27.0" prefWidth="365.0" text="Wrong login or password." visible="false" />
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

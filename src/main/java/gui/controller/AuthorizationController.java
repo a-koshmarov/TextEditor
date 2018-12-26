@@ -31,8 +31,8 @@ public class AuthorizationController {
 
     @FXML
     void onLogin(ActionEvent event) throws IOException {
-//        userManager.authorize(userField.getText(), passwordField.getText());
-        userManager.authorize("bob dylan", "knock");
+        userManager.authorize(userField.getText(), passwordField.getText());
+//        userManager.authorize("bob dylan", "knock");
 
         if (Context.getInstance().isAuthorized()){
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -49,7 +49,8 @@ public class AuthorizationController {
     void onRegister(ActionEvent event) throws IOException{
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Registration.fxml"));
+        Scene scene = new Scene(loader.load());
 
-        stage.setScene(new Scene(loader.load()));
+        stage.setScene(scene);
     }
 }

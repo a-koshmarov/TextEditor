@@ -24,4 +24,8 @@ public class Context {
         UserManager userManager = new UserManager();
         user = userManager.getUserEntity(userName, pass);
     }
+
+    public void logOut(){
+        user = null;
+    }
 }
